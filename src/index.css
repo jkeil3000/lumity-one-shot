@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface-0: #F6F5F1;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #EEEEE8;
+  --color-surface-3: #E4E3DD;
+
+  --color-ink-1: #1A1916;
+  --color-ink-2: #54524B;
+  --color-ink-3: #8A887F;
+  --color-ink-4: #BAB8B0;
+
+  --color-rule: #E2E1DB;
+  --color-rule-faint: #EEEDEA;
+
+  --color-warm: #B5603B;
+  --color-warm-hover: #9E5333;
+  --color-warm-surface: #FBF3EE;
+
+  --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+  --font-reading: 'Lora', 'Georgia', serif;
+}
+
+@layer base {
+  html {
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-surface-0);
+    color: var(--color-ink-1);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  #root { height: 100vh; overflow: hidden; }
+
+  ::selection {
+    background: var(--color-warm-surface);
+    color: var(--color-warm);
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--color-surface-3); border-radius: 2px; }
+
+  input, textarea, select, button { font-family: inherit; font-size: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+
+  .gradient-overlay {
+    background: linear-gradient(to top, rgba(26, 25, 22, 0.7) 0%, rgba(26, 25, 22, 0.15) 50%, transparent 100%);
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideFromRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.anim-fade-up { animation: fadeUp 0.18s ease-out both; }
+.anim-fade-in { animation: fadeIn 0.15s ease-out both; }
+.anim-slide-right { animation: slideFromRight 0.2s ease-out both; }
+.anim-scale-in { animation: scaleIn 0.14s ease-out both; }
