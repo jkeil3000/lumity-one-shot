@@ -72,15 +72,19 @@ export default function Stream() {
 
       {/* Content area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-[680px] mx-auto px-10">
-          {viewMode === 'scroll' ? (
+        {viewMode === 'scroll' ? (
+          /* Scroll: narrow column for reading, same as profile feed */
+          <div className="max-w-[680px] mx-auto px-10">
             <div className="py-6 space-y-6">
               {filtered.map(item => (
                 <ContentCard key={item.id} item={item} size="large" onClick={() => setSelectedItem(item)} />
               ))}
               {filtered.length === 0 && <Empty />}
             </div>
-          ) : (
+          </div>
+        ) : (
+          /* Scan: wide container matching At a Glance (960px) so 3+ cards show per carousel */
+          <div className="max-w-[960px] mx-auto px-10">
             <div className="pt-8 pb-6">
               {today.length > 0 && (
                 <div className="mb-10">
@@ -111,8 +115,8 @@ export default function Stream() {
               )}
               {filtered.length === 0 && <Empty />}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
