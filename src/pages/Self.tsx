@@ -253,7 +253,7 @@ export default function Self() {
 
         {/* ══════════════ FEED ══════════════ */}
         {mode === 'feed' && (
-          <div className="pb-10 max-w-[680px] mx-auto">
+          <div className="pb-10 max-w-[680px] mx-auto px-10">
             {/* Content type filter */}
             <div className="flex items-center gap-1.5 mb-6">
               {contentTypes.map(ct => (
@@ -359,9 +359,9 @@ function ViewAllSection({
       </div>
 
       {/* Grid of all items */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {items.map(item => (
-          <ContentCard key={item.id} item={item} size="compact" onClick={() => onSelect(item)} />
+          <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => onSelect(item)} />
         ))}
       </div>
       {items.length === 0 && (

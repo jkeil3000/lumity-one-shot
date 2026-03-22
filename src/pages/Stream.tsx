@@ -85,9 +85,9 @@ export default function Stream() {
               {today.length > 0 && (
                 <div className="mb-8">
                   <SectionHeader title="Today" />
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {today.map(item => (
-                      <ContentCard key={item.id} item={item} size="compact" onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
                     ))}
                   </div>
                 </div>
@@ -95,9 +95,9 @@ export default function Stream() {
               {thisWeek.length > 0 && (
                 <div className="mb-8">
                   <SectionHeader title="This Week" />
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {thisWeek.map(item => (
-                      <ContentCard key={item.id} item={item} size="compact" onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
                     ))}
                   </div>
                 </div>
@@ -105,9 +105,9 @@ export default function Stream() {
               {earlier.length > 0 && (
                 <div className="mb-8">
                   <SectionHeader title="Earlier" />
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {earlier.map(item => (
-                      <ContentCard key={item.id} item={item} size="compact" onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
                     ))}
                   </div>
                 </div>

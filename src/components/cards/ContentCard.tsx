@@ -8,13 +8,15 @@ type CardSize = 'large' | 'medium' | 'compact';
 interface ContentCardProps {
   item: ContentItem;
   size?: CardSize;
+  /** fluid: fills grid cell width instead of fixed 260px (use in 2-col grids, not carousels) */
+  fluid?: boolean;
   onClick: () => void;
 }
 
-export default function ContentCard({ item, size = 'medium', onClick }: ContentCardProps) {
+export default function ContentCard({ item, size = 'medium', fluid, onClick }: ContentCardProps) {
   if (size === 'large') return <LargeCard item={item} onClick={onClick} />;
   if (size === 'compact') return <CompactCard item={item} onClick={onClick} />;
-  return <MediumCard item={item} onClick={onClick} />;
+  return <MediumCard item={item} fluid={fluid} onClick={onClick} />;
 }
 
 /* ─── Large Card (Stream Scroll) ─── */
@@ -110,13 +112,13 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
 }
 
 /* ─── Medium Card (Carousels) ─── */
-function MediumCard({ item, onClick }: { item: ContentItem; onClick: () => void }) {
+function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boolean; onClick: () => void }) {
   const isThought = item.type === 'thought';
 
   return (
     <div
       onClick={onClick}
-      className="w-[260px] flex-shrink-0 bg-surface-1 rounded-xl overflow-hidden cursor-pointer group transition-all duration-200 hover:shadow-md border border-rule-faint"
+      className={`${fluid ? 'w-full' : 'w-[260px] flex-shrink-0'} bg-surface-1 rounded-xl overflow-hidden cursor-pointer group transition-all duration-200 hover:shadow-md border border-rule-faint`}
     >
       {isThought ? (
         <div className="bg-warm-surface px-4 py-5 h-[140px] flex items-center">
