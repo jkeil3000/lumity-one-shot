@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { allInterests, communities } from '../data/mock';
 import ContentCard from '../components/cards/ContentCard';
-import SectionHeader from '../components/cards/SectionHeader';
+import HorizontalCarousel from '../components/cards/HorizontalCarousel';
 
 export default function Stream() {
   const { viewMode, setViewMode, streamLens, setStreamLens, feed, setSelectedItem } = useApp();
@@ -83,33 +83,30 @@ export default function Stream() {
           ) : (
             <div className="pt-8 pb-6">
               {today.length > 0 && (
-                <div className="mb-8">
-                  <SectionHeader title="Today" />
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mb-10">
+                  <HorizontalCarousel title="Today">
                     {today.map(item => (
-                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
                     ))}
-                  </div>
+                  </HorizontalCarousel>
                 </div>
               )}
               {thisWeek.length > 0 && (
-                <div className="mb-8">
-                  <SectionHeader title="This Week" />
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mb-10">
+                  <HorizontalCarousel title="This Week">
                     {thisWeek.map(item => (
-                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
                     ))}
-                  </div>
+                  </HorizontalCarousel>
                 </div>
               )}
               {earlier.length > 0 && (
-                <div className="mb-8">
-                  <SectionHeader title="Earlier" />
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mb-10">
+                  <HorizontalCarousel title="Earlier">
                     {earlier.map(item => (
-                      <ContentCard key={item.id} item={item} size="medium" fluid onClick={() => setSelectedItem(item)} />
+                      <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
                     ))}
-                  </div>
+                  </HorizontalCarousel>
                 </div>
               )}
               {filtered.length === 0 && <Empty />}

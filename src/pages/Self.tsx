@@ -323,15 +323,20 @@ function ViewAllSection({
   onSelect: (item: ContentItem) => void;
 }) {
   const [typeFilter, setTypeFilter] = useState<ContentType>('all');
-  const title = target.kind === 'pinned' ? 'Pinned' : target.interest;
+  // For shelf targets, allow switching between interests without going back
+  const [activeInterest, setActiveInterest] = useState<string | null>(
+    target.kind === 'shelf' ? target.interest : null
+  );
+
+  const title = target.kind === 'pinned' ? 'Pinned' : (activeInterest ?? target.interest);
   const allItems = target.kind === 'pinned'
     ? pinned
-    : interestShelves.find(s => s.interest === target.interest)?.items ?? [];
+    : interestShelves.find(s => s.interest === (activeInterest ?? target.interest))?.items ?? [];
   const items = typeFilter === 'all' ? allItems : allItems.filter(i => i.type === typeFilter);
 
   return (
     <div>
-      {/* Back + title */}
+      {/* Back */}
       <button
         onClick={onBack}
         className="flex items-center gap-1.5 text-[12px] text-ink-4 hover:text-ink-2 transition-colors mb-4"
@@ -340,6 +345,25 @@ function ViewAllSection({
         Back
       </button>
       <SectionLabel label={title} />
+
+      {/* Interest pills — only shown for shelf view */}
+      {target.kind === 'shelf' && interestShelves.length > 1 && (
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          {interestShelves.map(s => (
+            <button
+              key={s.interest}
+              onClick={() => { setActiveInterest(s.interest); setTypeFilter('all'); }}
+              className={`text-[11px] px-3 py-1 rounded-full border transition-colors ${
+                (activeInterest ?? target.interest) === s.interest
+                  ? 'bg-ink-1 text-white border-ink-1'
+                  : 'bg-transparent text-ink-3 border-rule hover:border-ink-4 hover:text-ink-2'
+              }`}
+            >
+              {s.interest}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Content type filter */}
       <div className="flex items-center gap-1.5 mb-6">
