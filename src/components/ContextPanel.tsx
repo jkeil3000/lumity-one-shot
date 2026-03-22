@@ -9,7 +9,7 @@ export default function ContextPanel() {
   const item = selectedItem;
 
   return (
-    <div className="w-[400px] h-screen border-l border-rule bg-surface-1 flex-shrink-0 flex flex-col overflow-hidden anim-slide-right">
+    <div className="w-[480px] h-screen border-l border-rule bg-surface-1 flex-shrink-0 flex flex-col overflow-hidden anim-slide-right">
       {/* Header bar */}
       <div className="flex items-center justify-between px-6 h-[52px] border-b border-rule-faint flex-shrink-0">
         <span className="text-[11px] font-medium text-ink-4 uppercase tracking-[0.06em]">{getTypeLabel(item.type)}</span>

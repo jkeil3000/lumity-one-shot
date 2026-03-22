@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Link as LinkIcon, ChevronDown } from 'lucide-react';
+import { MapPin, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import {
   currentUser,
@@ -8,26 +8,44 @@ import {
   collections,
   getItemsByInterest,
   getCollectionThumbnail,
-  getProfileFavorites,
+  getProfilePinned,
+  getProfileLately,
 } from '../data/mock';
+import type { ContentItem } from '../data/mock';
 import AvatarCircle from '../components/cards/AvatarCircle';
 import ContentCard from '../components/cards/ContentCard';
 import HorizontalCarousel from '../components/cards/HorizontalCarousel';
 import CollectionCard from '../components/cards/CollectionCard';
 
 type ProfileMode = 'glance' | 'feed';
+type ContentType = 'all' | 'article' | 'book' | 'podcast' | 'video';
+
+// "View All" can show pinned items or a shelf's full list
+type ViewAllTarget = { kind: 'pinned' } | { kind: 'shelf'; interest: string } | null;
+
+const contentTypes: { value: ContentType; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'article', label: 'Articles' },
+  { value: 'book', label: 'Books' },
+  { value: 'podcast', label: 'Podcasts' },
+  { value: 'video', label: 'Videos' },
+];
 
 export default function Self() {
   const { setSelectedItem } = useApp();
   const [mode, setMode] = useState<ProfileMode>('glance');
   const [activeInterest, setActiveInterest] = useState<string | null>(null);
-  const [showAllShelves, setShowAllShelves] = useState(false);
+  const [activeType, setActiveType] = useState<ContentType>('all');
+  const [viewAllTarget, setViewAllTarget] = useState<ViewAllTarget>(null);
 
-  const favorites = getProfileFavorites();
+  // Pinned: user-curated items (isPinned flag). Could also be called "Favorites" —
+  // using "Pinned" as the UI label since it implies curation rather than a reaction.
+  const pinned = getProfilePinned();
+  const lately = getProfileLately();
 
-  // All shared/public posts for Feed mode
+  // Feed: only the current user's public posts/reposts, chronological
   const sharedPosts = [...libraryItems, ...feedItems]
-    .filter(i => i.visibility === 'public')
+    .filter(i => i.author.id === currentUser.id && i.visibility === 'public')
     .filter((item, idx, arr) => arr.findIndex(x => x.id === item.id) === idx);
 
   // Build interest shelves — sorted by item count (richest first)
@@ -42,17 +60,15 @@ export default function Self() {
   // Sort pills to match shelf display order
   const sortedInterests = interestShelves.map(s => s.interest);
 
-  // If an interest is selected, filter to just that shelf
-  const filteredShelves = activeInterest
-    ? interestShelves.filter(s => s.interest === activeInterest)
-    : interestShelves;
+  // Show one interest at a time — default to first if none selected
+  const resolvedInterest = activeInterest ?? sortedInterests[0] ?? null;
+  const activeShelf = resolvedInterest
+    ? interestShelves.find(s => s.interest === resolvedInterest)
+    : null;
 
-  // In "At a Glance" mode, show top 3 unless expanded
-  const displayedShelves = showAllShelves || activeInterest
-    ? filteredShelves
-    : filteredShelves.slice(0, 3);
-
-  const hasMoreShelves = !activeInterest && filteredShelves.length > 3;
+  // Filter items by content type
+  const filterByType = (items: ContentItem[]) =>
+    activeType === 'all' ? items : items.filter(i => i.type === activeType);
 
   return (
     <div className="h-full overflow-y-auto">
@@ -110,100 +126,127 @@ export default function Self() {
 
         {/* ── Mode Toggle ── */}
         <div className="flex items-center gap-1 mt-6 mb-8 border-b border-rule">
-          <ModeTab label="At a Glance" active={mode === 'glance'} onClick={() => setMode('glance')} />
-          <ModeTab label="Feed" active={mode === 'feed'} onClick={() => setMode('feed')} />
+          <ModeTab label="At a Glance" active={mode === 'glance'} onClick={() => { setMode('glance'); setActiveType('all'); }} />
+          <ModeTab label="Feed" active={mode === 'feed'} onClick={() => { setMode('feed'); setActiveType('all'); }} />
         </div>
 
         {/* ══════════════ AT A GLANCE ══════════════ */}
         {mode === 'glance' && (
           <div className="pb-10">
-            {/* Favorites carousel */}
-            {favorites.length > 0 && (
-              <div className="mb-10">
-                <HorizontalCarousel title="Favorites">
-                  {favorites.map(item => (
-                    <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
-                  ))}
-                </HorizontalCarousel>
-              </div>
-            )}
+            {/* ── View All (expanded grid) ── */}
+            {viewAllTarget ? (
+              <ViewAllSection
+                target={viewAllTarget}
+                pinned={pinned}
+                interestShelves={interestShelves}
+                onBack={() => setViewAllTarget(null)}
+                onSelect={setSelectedItem}
+              />
+            ) : (
+              <>
+                {/* Pinned carousel */}
+                {pinned.length > 0 && (
+                  <div className="mb-10">
+                    <HorizontalCarousel title="Pinned" action="View all" onAction={() => setViewAllTarget({ kind: 'pinned' })}>
+                      {pinned.map(item => (
+                        <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
+                      ))}
+                    </HorizontalCarousel>
+                  </div>
+                )}
 
-            {/* Shelves (top 3 by default, expandable) */}
-            <div className="mb-10">
-              <SectionLabel label="Shelves" />
+                {/* Lately: recent public posts by this user */}
+                {lately.length > 0 && (
+                  <div className="mb-10">
+                    <HorizontalCarousel title="Lately" action="View all" onAction={() => setMode('feed')}>
+                      {lately.map(item => (
+                        <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
+                      ))}
+                    </HorizontalCarousel>
+                  </div>
+                )}
 
-              {/* Interest pills */}
-              <div className="flex items-center gap-2 mb-6 flex-wrap">
-                <button
-                  onClick={() => { setActiveInterest(null); setShowAllShelves(false); }}
-                  className={`text-[11px] px-3 py-1 rounded-full border transition-colors ${
-                    !activeInterest
-                      ? 'bg-ink-1 text-white border-ink-1'
-                      : 'bg-transparent text-ink-3 border-rule hover:border-ink-4 hover:text-ink-2'
-                  }`}
-                >
-                  All
-                </button>
-                {sortedInterests.map(interest => (
-                  <button
-                    key={interest}
-                    onClick={() => {
-                      setActiveInterest(activeInterest === interest ? null : interest);
-                      setShowAllShelves(true);
-                    }}
-                    className={`text-[11px] px-3 py-1 rounded-full border transition-colors ${
-                      activeInterest === interest
-                        ? 'bg-ink-1 text-white border-ink-1'
-                        : 'bg-transparent text-ink-3 border-rule hover:border-ink-4 hover:text-ink-2'
-                    }`}
-                  >
-                    {interest}
-                  </button>
-                ))}
-              </div>
+                {/* Shelves — one interest at a time, navigate via pills */}
+                <div className="mb-10">
+                  <SectionLabel label="Shelves" />
 
-              {/* Shelf carousels */}
-              {displayedShelves.map(({ interest, items }) => (
-                <div key={interest} className="mb-8">
-                  <HorizontalCarousel title={interest}>
-                    {items.map(item => (
-                      <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
+                  {/* Interest pills — selecting switches the visible shelf */}
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                    {sortedInterests.map(interest => (
+                      <button
+                        key={interest}
+                        onClick={() => setActiveInterest(interest)}
+                        className={`text-[11px] px-3 py-1 rounded-full border transition-colors ${
+                          resolvedInterest === interest
+                            ? 'bg-ink-1 text-white border-ink-1'
+                            : 'bg-transparent text-ink-3 border-rule hover:border-ink-4 hover:text-ink-2'
+                        }`}
+                      >
+                        {interest}
+                      </button>
                     ))}
-                  </HorizontalCarousel>
-                </div>
-              ))}
+                  </div>
 
-              {/* See all interests */}
-              {hasMoreShelves && !showAllShelves && (
-                <button
-                  onClick={() => setShowAllShelves(true)}
-                  className="flex items-center gap-1.5 text-[12px] text-ink-3 hover:text-warm transition-colors mx-auto"
-                >
-                  <ChevronDown size={14} strokeWidth={1.8} />
-                  See all {interestShelves.length} interests
-                </button>
-              )}
-            </div>
+                  {/* Content type filter */}
+                  <div className="flex items-center gap-1.5 mb-6">
+                    {contentTypes.map(ct => (
+                      <button
+                        key={ct.value}
+                        onClick={() => setActiveType(ct.value)}
+                        className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
+                          activeType === ct.value
+                            ? 'bg-surface-2 text-ink-2 font-medium'
+                            : 'text-ink-4 hover:text-ink-3'
+                        }`}
+                      >
+                        {ct.label}
+                      </button>
+                    ))}
+                  </div>
 
-            {/* Collections */}
-            {collections.length > 0 && (
-              <div className="mb-10">
-                <SectionLabel label="Collections" />
-                <div className="grid grid-cols-2 gap-3">
-                  {collections.map(col => (
-                    <CollectionCard
-                      key={col.id}
-                      name={col.name}
-                      count={col.count}
-                      thumbnail={getCollectionThumbnail(col.name)}
-                      onClick={() => {
-                        const item = libraryItems.find(i => i.collections.includes(col.name));
-                        if (item) setSelectedItem(item);
-                      }}
-                    />
-                  ))}
+                  {/* Single shelf carousel for the active interest */}
+                  {activeShelf && (
+                    <HorizontalCarousel
+                      title={activeShelf.interest}
+                      action="View all"
+                      onAction={() => setViewAllTarget({ kind: 'shelf', interest: activeShelf.interest })}
+                      subtle
+                    >
+                      {filterByType(activeShelf.items).map(item => (
+                        <ContentCard key={item.id} item={item} size="medium" onClick={() => setSelectedItem(item)} />
+                      ))}
+                    </HorizontalCarousel>
+                  )}
                 </div>
-              </div>
+
+                {/* Collections — cover-style tiles, max 4 visible */}
+                {collections.length > 0 && (
+                  <div className="mb-10">
+                    <div className="flex items-center justify-between mb-4 pb-2 border-b border-rule-faint">
+                      <span className="text-[12px] font-semibold text-ink-3 uppercase tracking-[0.06em]">Collections</span>
+                      {collections.length > 4 && (
+                        <button className="text-[12px] text-ink-4 hover:text-warm transition-colors">
+                          View all
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {collections.slice(0, 4).map(col => (
+                        <CollectionCard
+                          key={col.id}
+                          name={col.name}
+                          count={col.count}
+                          thumbnail={getCollectionThumbnail(col.name)}
+                          onClick={() => {
+                            const item = libraryItems.find(i => i.collections.includes(col.name));
+                            if (item) setSelectedItem(item);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
@@ -211,11 +254,28 @@ export default function Self() {
         {/* ══════════════ FEED ══════════════ */}
         {mode === 'feed' && (
           <div className="pb-10 max-w-[680px] mx-auto">
-            {sharedPosts.length === 0 && (
+            {/* Content type filter */}
+            <div className="flex items-center gap-1.5 mb-6">
+              {contentTypes.map(ct => (
+                <button
+                  key={ct.value}
+                  onClick={() => setActiveType(ct.value)}
+                  className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
+                    activeType === ct.value
+                      ? 'bg-surface-2 text-ink-2 font-medium'
+                      : 'text-ink-4 hover:text-ink-3'
+                  }`}
+                >
+                  {ct.label}
+                </button>
+              ))}
+            </div>
+
+            {filterByType(sharedPosts).length === 0 && (
               <p className="py-12 text-center text-[13px] text-ink-4">No shared posts yet.</p>
             )}
             <div className="space-y-6">
-              {sharedPosts.map(item => (
+              {filterByType(sharedPosts).map(item => (
                 <ContentCard key={item.id} item={item} size="large" onClick={() => setSelectedItem(item)} />
               ))}
             </div>
@@ -243,7 +303,70 @@ function ModeTab({ label, active, onClick }: { label: string; active: boolean; o
 function SectionLabel({ label }: { label: string }) {
   return (
     <div className="mb-4 pb-2 border-b border-rule-faint">
-      <span className="text-[11px] font-medium text-ink-4 uppercase tracking-[0.06em]">{label}</span>
+      <span className="text-[12px] font-semibold text-ink-3 uppercase tracking-[0.06em]">{label}</span>
+    </div>
+  );
+}
+
+/* ─── View All (expanded grid for Pinned or a Shelf) ─── */
+function ViewAllSection({
+  target,
+  pinned,
+  interestShelves,
+  onBack,
+  onSelect,
+}: {
+  target: NonNullable<ViewAllTarget>;
+  pinned: ContentItem[];
+  interestShelves: { interest: string; items: ContentItem[] }[];
+  onBack: () => void;
+  onSelect: (item: ContentItem) => void;
+}) {
+  const [typeFilter, setTypeFilter] = useState<ContentType>('all');
+  const title = target.kind === 'pinned' ? 'Pinned' : target.interest;
+  const allItems = target.kind === 'pinned'
+    ? pinned
+    : interestShelves.find(s => s.interest === target.interest)?.items ?? [];
+  const items = typeFilter === 'all' ? allItems : allItems.filter(i => i.type === typeFilter);
+
+  return (
+    <div>
+      {/* Back + title */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-1.5 text-[12px] text-ink-4 hover:text-ink-2 transition-colors mb-4"
+      >
+        <ArrowLeft size={14} strokeWidth={1.8} />
+        Back
+      </button>
+      <SectionLabel label={title} />
+
+      {/* Content type filter */}
+      <div className="flex items-center gap-1.5 mb-6">
+        {contentTypes.map(ct => (
+          <button
+            key={ct.value}
+            onClick={() => setTypeFilter(ct.value)}
+            className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
+              typeFilter === ct.value
+                ? 'bg-surface-2 text-ink-2 font-medium'
+                : 'text-ink-4 hover:text-ink-3'
+            }`}
+          >
+            {ct.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Grid of all items */}
+      <div className="grid grid-cols-3 gap-4">
+        {items.map(item => (
+          <ContentCard key={item.id} item={item} size="compact" onClick={() => onSelect(item)} />
+        ))}
+      </div>
+      {items.length === 0 && (
+        <p className="py-8 text-center text-[13px] text-ink-4">No items yet.</p>
+      )}
     </div>
   );
 }

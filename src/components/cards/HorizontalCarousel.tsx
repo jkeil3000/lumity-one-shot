@@ -5,10 +5,12 @@ interface HorizontalCarouselProps {
   title: string;
   action?: string;
   onAction?: () => void;
+  /** Use subtle for sub-section titles (e.g. interest name inside Shelves) */
+  subtle?: boolean;
   children: React.ReactNode;
 }
 
-export default function HorizontalCarousel({ title, action, onAction, children }: HorizontalCarouselProps) {
+export default function HorizontalCarousel({ title, action, onAction, subtle, children }: HorizontalCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: 'left' | 'right') => {
@@ -21,7 +23,10 @@ export default function HorizontalCarousel({ title, action, onAction, children }
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[15px] font-semibold text-ink-1 tracking-[-0.01em]">{title}</h2>
+        <h2 className={subtle
+          ? 'text-[13px] font-medium text-ink-2 tracking-[-0.01em]'
+          : 'text-[12px] font-semibold text-ink-3 uppercase tracking-[0.06em]'
+        }>{title}</h2>
         <div className="flex items-center gap-2">
           {action && (
             <button onClick={onAction} className="text-[12px] text-ink-4 hover:text-warm transition-colors mr-2">

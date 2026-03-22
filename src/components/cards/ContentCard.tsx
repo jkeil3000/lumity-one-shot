@@ -28,13 +28,13 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
     >
       {/* Thumbnail or thought bg */}
       {isThought ? (
-        <div className="bg-warm-surface px-8 py-10">
-          <p className="font-reading text-[20px] text-ink-1 leading-[1.6] italic">
+        <div className="bg-warm-surface px-8 py-8">
+          <p className="font-reading text-[18px] text-ink-1 leading-[1.6] italic">
             "{item.caption}"
           </p>
         </div>
       ) : item.thumbnail ? (
-        <div className="relative aspect-[2/1] overflow-hidden">
+        <div className="relative aspect-[3/1] overflow-hidden">
           <img
             src={item.thumbnail}
             alt={item.title}
@@ -42,11 +42,11 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
             loading="lazy"
           />
           <div className="gradient-overlay absolute inset-0" />
-          <div className="absolute bottom-0 left-0 right-0 p-5">
+          <div className="absolute bottom-0 left-0 right-0 p-4">
             <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-white/70 mb-1 block">
               {getTypeLabel(item.type)}
             </span>
-            <h3 className="text-[19px] font-semibold text-white leading-[1.25] tracking-[-0.015em]">
+            <h3 className="text-[17px] font-semibold text-white leading-[1.25] tracking-[-0.015em]">
               {item.title}
             </h3>
           </div>
@@ -57,14 +57,14 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
       <div className="px-5 py-4">
         {/* Title (only if no thumbnail overlay) */}
         {!isThought && !item.thumbnail && item.title && (
-          <h3 className="text-[17px] font-semibold text-ink-1 leading-[1.3] mb-2 tracking-[-0.015em] group-hover:text-warm transition-colors">
+          <h3 className="text-[16px] font-semibold text-ink-1 leading-[1.3] mb-2 tracking-[-0.015em] group-hover:text-warm transition-colors">
             {item.title}
           </h3>
         )}
 
         {/* Caption */}
         {!isThought && (
-          <p className="font-reading text-[14px] text-ink-2 leading-[1.7] line-clamp-2 mb-3">
+          <p className="font-reading text-[13px] text-ink-2 leading-[1.65] mb-3">
             {item.caption}
           </p>
         )}
@@ -204,9 +204,14 @@ function CompactCard({ item, onClick }: { item: ContentItem; onClick: () => void
       )}
 
       <div className="p-2.5">
-        <h3 className="text-[12px] font-medium text-ink-1 leading-[1.35] line-clamp-2 group-hover:text-warm transition-colors mb-1.5">
+        <h3 className="text-[12px] font-medium text-ink-1 leading-[1.35] line-clamp-2 group-hover:text-warm transition-colors mb-1">
           {item.title || item.caption.slice(0, 50)}
         </h3>
+        {item.caption && item.title && (
+          <p className="font-reading text-[10px] text-ink-3 leading-[1.5] line-clamp-2 mb-1.5">
+            {item.caption}
+          </p>
+        )}
         <div className="flex items-center gap-1.5">
           <AvatarCircle user={item.author} size="sm" />
           <span className="text-[10px] text-ink-4 truncate">{item.author.displayName}</span>

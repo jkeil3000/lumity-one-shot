@@ -291,10 +291,10 @@ export const libraryItems: ContentItem[] = [
     caption: 'Mike Caulfield\'s original piece on digital gardens vs. the stream. Still the best articulation of two fundamentally different ways of organizing knowledge online.',
     author: currentUser,
     interests: ['Design Thinking', 'Product Design'],
-    visibility: 'private',
+    visibility: 'public',
     state: 'favorites' as const,
     collections: ['Design Thinking'],
-    likes: 0,
+    likes: 31,
     comments: [],
     createdAt: '1w ago',
     isPinned: true,
@@ -308,10 +308,10 @@ export const libraryItems: ContentItem[] = [
     caption: 'The tension between wanting progress and the systems that slow it down. Applies directly to how we think about building software too.',
     author: currentUser,
     interests: ['Climate Tech', 'Philosophy'],
-    visibility: 'private',
+    visibility: 'public',
     state: 'completed' as const,
     collections: ['Climate Tech'],
-    likes: 0,
+    likes: 18,
     comments: [],
     createdAt: '2w ago',
   },
@@ -324,10 +324,10 @@ export const libraryItems: ContentItem[] = [
     caption: 'The idea that buildings (and by extension, all designed things) should be built to adapt over time. Shearing layers as a design principle.',
     author: currentUser,
     interests: ['Design Thinking'],
-    visibility: 'private',
+    visibility: 'public',
     state: 'completed' as const,
     collections: ['Design Thinking', 'Books 2026'],
-    likes: 0,
+    likes: 27,
     comments: [],
     createdAt: '3w ago',
     isPinned: true,
@@ -341,10 +341,10 @@ export const libraryItems: ContentItem[] = [
     caption: 'Every creator needs a principle. The immediacy of feedback as the foundation of understanding. This talk rewired how I think about tools.',
     author: currentUser,
     interests: ['Product Design', 'Design Thinking'],
-    visibility: 'private',
+    visibility: 'public',
     state: 'favorites' as const,
     collections: ['Design Thinking'],
-    likes: 0,
+    likes: 52,
     comments: [],
     createdAt: '1m ago',
     isPinned: true,
@@ -492,6 +492,19 @@ export function getCollectionThumbnail(collectionName: string): string | undefin
 
 export function getProfileFavorites(): ContentItem[] {
   return libraryItems.filter(i => i.state === 'favorites');
+}
+
+// Pinned: user-curated items flagged with isPinned, shown near top of profile
+export function getProfilePinned(): ContentItem[] {
+  return libraryItems.filter(i => i.isPinned);
+}
+
+// Lately: only the current user's publicly shared posts, chronological
+// Does NOT include private saves, general activity, or other users' content
+export function getProfileLately(): ContentItem[] {
+  return [...libraryItems, ...feedItems]
+    .filter(i => i.author.id === currentUser.id && i.visibility === 'public')
+    .filter((item, idx, arr) => arr.findIndex(x => x.id === item.id) === idx);
 }
 
 export function getProfileShared(): ContentItem[] {
