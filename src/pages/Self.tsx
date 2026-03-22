@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { MapPin, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import {
@@ -168,10 +168,10 @@ export default function Self() {
 
                 {/* Shelves — one interest at a time, navigate via pills */}
                 <div className="mb-10">
-                  <SectionLabel label="Shelves" />
+                  <SectionLabel label="Shelves" right={<TypePills active={activeType} onChange={setActiveType} />} />
 
                   {/* Interest pills — selecting switches the visible shelf */}
-                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <div className="flex items-center gap-2 mb-6 flex-wrap">
                     {sortedInterests.map(interest => (
                       <button
                         key={interest}
@@ -183,23 +183,6 @@ export default function Self() {
                         }`}
                       >
                         {interest}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Content type filter */}
-                  <div className="flex items-center gap-1.5 mb-6">
-                    {contentTypes.map(ct => (
-                      <button
-                        key={ct.value}
-                        onClick={() => setActiveType(ct.value)}
-                        className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
-                          activeType === ct.value
-                            ? 'bg-surface-2 text-ink-2 font-medium'
-                            : 'text-ink-4 hover:text-ink-3'
-                        }`}
-                      >
-                        {ct.label}
                       </button>
                     ))}
                   </div>
@@ -254,22 +237,7 @@ export default function Self() {
         {/* ══════════════ FEED ══════════════ */}
         {mode === 'feed' && (
           <div className="pb-10 max-w-[680px] mx-auto px-10">
-            {/* Content type filter */}
-            <div className="flex items-center gap-1.5 mb-6">
-              {contentTypes.map(ct => (
-                <button
-                  key={ct.value}
-                  onClick={() => setActiveType(ct.value)}
-                  className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
-                    activeType === ct.value
-                      ? 'bg-surface-2 text-ink-2 font-medium'
-                      : 'text-ink-4 hover:text-ink-3'
-                  }`}
-                >
-                  {ct.label}
-                </button>
-              ))}
-            </div>
+            <SectionLabel label="Feed" right={<TypePills active={activeType} onChange={setActiveType} />} />
 
             {filterByType(sharedPosts).length === 0 && (
               <p className="py-12 text-center text-[13px] text-ink-4">No shared posts yet.</p>
@@ -300,10 +268,31 @@ function ModeTab({ label, active, onClick }: { label: string; active: boolean; o
   );
 }
 
-function SectionLabel({ label }: { label: string }) {
+function SectionLabel({ label, right }: { label: string; right?: ReactNode }) {
   return (
-    <div className="mb-4 pb-2 border-b border-rule-faint">
+    <div className="flex items-center justify-between mb-4 pb-2 border-b border-rule-faint">
       <span className="text-[12px] font-semibold text-ink-3 uppercase tracking-[0.06em]">{label}</span>
+      {right}
+    </div>
+  );
+}
+
+function TypePills({ active, onChange }: { active: ContentType; onChange: (t: ContentType) => void }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      {contentTypes.map(ct => (
+        <button
+          key={ct.value}
+          onClick={() => onChange(ct.value)}
+          className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
+            active === ct.value
+              ? 'bg-surface-2 text-ink-2 font-medium'
+              : 'text-ink-4 hover:text-ink-3'
+          }`}
+        >
+          {ct.label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -344,11 +333,15 @@ function ViewAllSection({
         <ArrowLeft size={14} strokeWidth={1.8} />
         Back
       </button>
-      <SectionLabel label={title} />
+      {/* Header: "Shelves" or "Pinned" with type filter inline */}
+      <SectionLabel
+        label={target.kind === 'shelf' ? 'Shelves' : 'Pinned'}
+        right={<TypePills active={typeFilter} onChange={setTypeFilter} />}
+      />
 
       {/* Interest pills — only shown for shelf view */}
       {target.kind === 'shelf' && interestShelves.length > 1 && (
-        <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
           {interestShelves.map(s => (
             <button
               key={s.interest}
@@ -364,23 +357,6 @@ function ViewAllSection({
           ))}
         </div>
       )}
-
-      {/* Content type filter */}
-      <div className="flex items-center gap-1.5 mb-6">
-        {contentTypes.map(ct => (
-          <button
-            key={ct.value}
-            onClick={() => setTypeFilter(ct.value)}
-            className={`text-[10px] px-2.5 py-0.5 rounded-full transition-colors ${
-              typeFilter === ct.value
-                ? 'bg-surface-2 text-ink-2 font-medium'
-                : 'text-ink-4 hover:text-ink-3'
-            }`}
-          >
-            {ct.label}
-          </button>
-        ))}
-      </div>
 
       {/* Grid of all items */}
       <div className="grid grid-cols-2 gap-4">

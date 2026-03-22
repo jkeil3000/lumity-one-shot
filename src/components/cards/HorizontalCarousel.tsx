@@ -22,7 +22,7 @@ export default function HorizontalCarousel({ title, action, onAction, subtle, ch
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className={`flex items-center justify-between pb-2 mb-4 ${subtle ? '' : 'border-b border-rule-faint'}`}>
         <h2 className={subtle
           ? 'text-[13px] font-medium text-ink-2 tracking-[-0.01em]'
           : 'text-[12px] font-semibold text-ink-3 uppercase tracking-[0.06em]'
