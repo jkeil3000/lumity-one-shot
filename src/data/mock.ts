@@ -42,6 +42,8 @@ export interface Collection {
   id: string;
   name: string;
   count: number;
+  description?: string;
+  visibility: 'private' | 'public';
 }
 
 export interface Community {
@@ -186,7 +188,7 @@ export const feedItems: ContentItem[] = [
     interests: ['Neuroscience', 'Philosophy'],
     visibility: 'public',
     state: 'completed',
-    collections: ['Books 2026'],
+    collections: [],
     likes: 89,
     comments: [],
     createdAt: '1d ago',
@@ -350,6 +352,22 @@ export const libraryItems: ContentItem[] = [
     isPinned: true,
   },
   {
+    id: 'l7',
+    type: 'book' as const,
+    title: 'The Art of Noticing',
+    source: 'Rob Walker',
+    thumbnail: 'https://picsum.photos/seed/l7/600/400',
+    caption: 'A practical guide to paying attention in a distracted world. 131 exercises for rediscovering what matters.',
+    author: currentUser,
+    interests: ['Philosophy', 'Design Thinking'],
+    visibility: 'public',
+    state: 'in-progress' as const,
+    collections: ['Books 2026'],
+    likes: 14,
+    comments: [],
+    createdAt: '3d ago',
+  },
+  {
     id: 'l5',
     type: 'thought' as const,
     title: '',
@@ -382,10 +400,10 @@ export const libraryItems: ContentItem[] = [
 ];
 
 export const collections: Collection[] = [
-  { id: 'col1', name: 'Design Thinking', count: 12 },
-  { id: 'col2', name: 'AI Ethics', count: 8 },
-  { id: 'col3', name: 'Books 2026', count: 15 },
-  { id: 'col4', name: 'Climate Tech', count: 6 },
+  { id: 'col1', name: 'Design Thinking', count: 12, visibility: 'public', description: 'How great things get made. Process, craft, and the space between intention and execution.' },
+  { id: 'col2', name: 'AI Ethics', count: 8, visibility: 'private', description: 'The questions we should be asking before the decisions get made for us.' },
+  { id: 'col3', name: 'Books 2026', count: 15, visibility: 'public', description: 'Everything I\'m reading this year. Slow, deliberate, cover to cover.' },
+  { id: 'col4', name: 'Climate Tech', count: 6, visibility: 'private', description: 'Optimism with receipts. Technology and policy that might actually move the needle.' },
 ];
 
 export const allInterests = [
@@ -488,6 +506,13 @@ export function getItemsByInterest(interest: string): ContentItem[] {
 export function getCollectionThumbnail(collectionName: string): string | undefined {
   const item = libraryItems.find(i => i.collections.includes(collectionName));
   return item?.thumbnail;
+}
+
+export function getCollectionMosaicThumbnails(collectionName: string, max = 4): string[] {
+  return libraryItems
+    .filter(i => i.collections.includes(collectionName) && i.thumbnail)
+    .slice(0, max)
+    .map(i => i.thumbnail!);
 }
 
 export function getProfileFavorites(): ContentItem[] {
