@@ -1,9 +1,10 @@
 interface PromptCardProps {
   text: string;
+  cta?: string;
   onClick: () => void;
 }
 
-export default function PromptCard({ text, onClick }: PromptCardProps) {
+export default function PromptCard({ text, cta = 'Write a note', onClick }: PromptCardProps) {
   return (
     <button
       onClick={onClick}
@@ -13,7 +14,7 @@ export default function PromptCard({ text, onClick }: PromptCardProps) {
         {text}
       </p>
       <span className="text-[11px] text-warm font-medium group-hover:underline">
-        Write a note
+        {cta}
       </span>
     </button>
   );

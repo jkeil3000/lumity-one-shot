@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* ── Default (Lumity) tokens ── */
   --color-surface-0: #F6F5F1;
   --color-surface-1: #FFFFFF;
   --color-surface-2: #EEEEE8;
@@ -20,6 +21,61 @@
 
   --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
   --font-reading: 'Lora', 'Georgia', serif;
+}
+
+/* ═══════════════════════════════════════════
+   MOCKUP A — Midnight Compass (Dark / Gold)
+   Philosopher's study at night. Focused,
+   intentional, weighty. Gold = classical
+   achievement, directional purpose.
+   ═══════════════════════════════════════════ */
+[data-theme="midnight"] {
+  --color-surface-0: #0E0E13;
+  --color-surface-1: #16161D;
+  --color-surface-2: #222230;
+  --color-surface-3: #2E2E3A;
+
+  --color-ink-1: #E6E4DF;
+  --color-ink-2: #A5A29C;
+  --color-ink-3: #6E6B66;
+  --color-ink-4: #48463F;
+
+  --color-rule: #282832;
+  --color-rule-faint: #1F1F28;
+
+  --color-warm: #C9A84C;
+  --color-warm-hover: #B89840;
+  --color-warm-surface: #1C1A12;
+
+  --font-reading: 'Playfair Display', 'Georgia', serif;
+}
+
+/* ═══════════════════════════════════════════
+   MOCKUP B — Stone & Sage (Light / Olive)
+   Ancient architecture, a forest path.
+   Grounded, calm, organic purpose.
+   Olive = growth, natural order, telos
+   as fulfillment of nature.
+   ═══════════════════════════════════════════ */
+[data-theme="stone"] {
+  --color-surface-0: #F0EDE7;
+  --color-surface-1: #F9F8F5;
+  --color-surface-2: #E5E2DA;
+  --color-surface-3: #D8D5CC;
+
+  --color-ink-1: #1C1F1A;
+  --color-ink-2: #484E42;
+  --color-ink-3: #767C6E;
+  --color-ink-4: #A4A99A;
+
+  --color-rule: #D6D3C8;
+  --color-rule-faint: #E5E3DA;
+
+  --color-warm: #4A6741;
+  --color-warm-hover: #3C5736;
+  --color-warm-surface: #ECF0E9;
+
+  --font-reading: 'Source Serif 4', 'Georgia', serif;
 }
 
 @layer base {

@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "lumity-dev",
+      "name": "lumity",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 5173
+      "runtimeArgs": ["--prefix", "/Users/jeffreykeil/lumity", "run", "dev", "--", "--port", "5174"],
+      "port": 5174
     }
   ]
 }

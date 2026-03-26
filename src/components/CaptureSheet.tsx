@@ -1,21 +1,30 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Globe, Lock } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../context/ThemeContext';
 import { currentUser, allInterests, type ContentItem } from '../data/mock';
 
-const placeholders = [
+const lumityPlaceholders = [
   'What made this worth saving?',
   'Your take...',
   'Why does this matter to you?',
 ];
 
+const telosPlaceholders = [
+  'Why does this matter to who you\'re becoming?',
+  'What purpose does this serve?',
+  'How does this move you forward?',
+];
+
 export default function CaptureSheet() {
   const { captureOpen, setCaptureOpen, addItem } = useApp();
+  const { isTelos } = useTheme();
   const [contentValue, setContentValue] = useState('');
   const [caption, setCaption] = useState('');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
   const [showTags, setShowTags] = useState(false);
+  const placeholders = isTelos ? telosPlaceholders : lumityPlaceholders;
   const [placeholder] = useState(placeholders[Math.floor(Math.random() * placeholders.length)]);
   const inputRef = useRef<HTMLInputElement>(null);
 

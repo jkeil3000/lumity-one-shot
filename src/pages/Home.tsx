@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Flame, TrendingUp, Layers } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   currentUser,
   consumptionStats,
@@ -19,6 +20,7 @@ import SectionHeader from '../components/cards/SectionHeader';
 
 export default function Home() {
   const { setSelectedItem, setCaptureOpen } = useApp();
+  const { isTelos } = useTheme();
   const navigate = useNavigate();
 
   const friendActivity = getFriendActivity();
@@ -26,24 +28,53 @@ export default function Home() {
   const recentlySaved = getRecentlySaved();
   const editorialPicks = getEditorialPicks();
 
+  // Language shifts for Telos — from "quiet collecting" to "purposeful becoming"
+  const copy = isTelos
+    ? {
+        heroTitle: 'Your trajectory',
+        heroSubtitle: 'Where you\'ve been heading, and what\'s pulling you forward.',
+        queueTitle: 'Underway',
+        queueAction: 'View vault',
+        friendsTitle: 'From Your Circle',
+        themeTitle: 'Explore by Domain',
+        editorialTitle: 'Essential Readings',
+        promptsTitle: 'Inquiries',
+        promptsSubtitle: 'Socratic provocations for purposeful reflection.',
+        promptCta: 'Respond',
+        suggestedTitle: 'Toward',
+      }
+    : {
+        heroTitle: 'Your thinking lately',
+        heroSubtitle: 'A quick orientation to your recent arc.',
+        queueTitle: 'Your Queue',
+        queueAction: 'View library',
+        friendsTitle: 'From Friends',
+        themeTitle: 'Explore by Theme',
+        editorialTitle: 'Editorial Picks',
+        promptsTitle: 'Quiet Prompts',
+        promptsSubtitle: 'Prompts for reflection-first posting.',
+        promptCta: 'Write a note',
+        suggestedTitle: 'Suggested for You',
+      };
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-[960px] mx-auto px-8 py-8">
 
-        {/* Your thinking lately */}
+        {/* Hero section */}
         <div className="bg-warm-surface/60 border border-warm/10 rounded-xl p-6 mb-10">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h1 className="text-[20px] font-semibold text-ink-1 tracking-[-0.02em] mb-1">
-                Your thinking lately
+                {copy.heroTitle}
               </h1>
-              <p className="text-[13px] text-ink-3">A quick orientation to your recent arc.</p>
+              <p className="text-[13px] text-ink-3">{copy.heroSubtitle}</p>
             </div>
             <button
               onClick={() => navigate('/self')}
               className="text-[12px] text-ink-4 hover:text-warm transition-colors"
             >
-              View profile
+              {isTelos ? 'View self' : 'View profile'}
             </button>
           </div>
           <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -54,17 +85,17 @@ export default function Home() {
             ))}
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <StatCard icon={BookOpen} value={consumptionStats.itemsThisWeek} label="items this week" />
+            <StatCard icon={BookOpen} value={consumptionStats.itemsThisWeek} label={isTelos ? 'engaged this week' : 'items this week'} />
             <StatCard icon={Flame} value={`${consumptionStats.streak} days`} label="streak" />
-            <StatCard icon={TrendingUp} value={currentUser.interests.length} label="active interests" />
+            <StatCard icon={TrendingUp} value={currentUser.interests.length} label={isTelos ? 'active domains' : 'active interests'} />
             <StatCard icon={Layers} value={currentUser.savesSharedCount} label="shared" />
           </div>
         </div>
 
-        {/* Your Queue */}
+        {/* Queue / Underway */}
         {recentlySaved.length > 0 && (
           <div className="mb-10">
-            <HorizontalCarousel title="Your Queue" action="View library" onAction={() => navigate('/mind')}>
+            <HorizontalCarousel title={copy.queueTitle} action={copy.queueAction} onAction={() => navigate('/mind')}>
               {recentlySaved.map(item => (
                 <div key={item.id} style={{ scrollSnapAlign: 'start' }}>
                   <ContentCard item={item} size="medium" onClick={() => setSelectedItem(item)} />
@@ -74,10 +105,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* From Friends */}
+        {/* From Friends / Circle */}
         {friendActivity.length > 0 && (
           <div className="mb-10">
-            <HorizontalCarousel title="From Friends" action="See all" onAction={() => navigate('/stream')}>
+            <HorizontalCarousel title={copy.friendsTitle} action="See all" onAction={() => navigate('/stream')}>
               {friendActivity.map(item => (
                 <div key={item.id} style={{ scrollSnapAlign: 'start' }}>
                   <ContentCard item={item} size="medium" onClick={() => setSelectedItem(item)} />
@@ -87,9 +118,9 @@ export default function Home() {
           </div>
         )}
 
-        {/* Explore by Theme */}
+        {/* Explore by Theme / Domain */}
         <div className="mb-10">
-          <SectionHeader title="Explore by Theme" action="View all" onAction={() => navigate('/stream')} />
+          <SectionHeader title={copy.themeTitle} action="View all" onAction={() => navigate('/stream')} />
           <div className="grid grid-cols-4 gap-3">
             {themeCards.map(theme => (
               <button
@@ -113,10 +144,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Editorial Picks */}
+        {/* Editorial Picks / Essential Readings */}
         {editorialPicks.length > 0 && (
           <div className="mb-10">
-            <HorizontalCarousel title="Editorial Picks">
+            <HorizontalCarousel title={copy.editorialTitle}>
               {editorialPicks.map(item => (
                 <div key={item.id} style={{ scrollSnapAlign: 'start' }}>
                   <ContentCard item={item} size="medium" onClick={() => setSelectedItem(item)} />
@@ -126,25 +157,26 @@ export default function Home() {
           </div>
         )}
 
-        {/* Quiet Prompts */}
+        {/* Prompts / Inquiries */}
         <div className="mb-10">
-          <SectionHeader title="Quiet Prompts" />
-          <p className="text-[12px] text-ink-4 -mt-3 mb-4">Prompts for reflection-first posting.</p>
+          <SectionHeader title={copy.promptsTitle} />
+          <p className="text-[12px] text-ink-4 -mt-3 mb-4">{copy.promptsSubtitle}</p>
           <div className="flex gap-3">
             {quietPrompts.slice(0, 3).map(prompt => (
               <PromptCard
                 key={prompt.id}
                 text={prompt.text}
+                cta={copy.promptCta}
                 onClick={() => setCaptureOpen(true)}
               />
             ))}
           </div>
         </div>
 
-        {/* Suggested for You */}
+        {/* Suggested / Toward */}
         {recommendations.length > 0 && (
           <div className="mb-10">
-            <HorizontalCarousel title="Suggested for You">
+            <HorizontalCarousel title={copy.suggestedTitle}>
               {recommendations.map(item => (
                 <div key={item.id} style={{ scrollSnapAlign: 'start' }}>
                   <ContentCard item={item} size="medium" onClick={() => setSelectedItem(item)} />
