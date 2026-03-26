@@ -116,15 +116,24 @@ type ContentItem = {
   source?: string
   caption?: string
   visibility: 'private' | 'public'
-  state: 'saved' | 'in-progress' | 'completed'
+  state: 'saved' | 'in-progress' | 'completed' | 'favorites'
   interests: string[]
   collections: string[]
   // ... plus thumbnail, author, likes, comments, dates, isPinned
+}
+
+interface Collection {
+  id: string
+  name: string
+  count: number           // display count (not derived from libraryItems)
+  description?: string    // editorial description shown in overview + room header
+  visibility: 'private' | 'public'
 }
 ```
 
 - **Thoughts** render differently: warm-surface background, italic caption, no title
 - **External content** (articles, books, etc.): title, source, thumbnail, type label
+- **feedItems** must NOT have `collections` values set — collections are personal library data only. Feed items that get pulled into `libraryItems` via `feedItems.slice(0, n)` will inherit collections tags, causing phantom items.
 
 ### ContentCard Sizes
 
@@ -136,8 +145,21 @@ type ContentItem = {
 ### View Modes
 
 - **Stream:** "Scroll" (vertical feed) vs "Scan" (interest-grouped carousels)
-- **Mind (Library):** "Grid" (3-col) vs "List" (detailed rows) + state filters + collection nav
+- **Mind (Library):** Sidebar with reading states (Saved / In Progress / Completed / Favorites) + Collections nav. Main area has Grid/List toggle. `libraryFilter === 'all' && !libraryCollection` renders the collections overview grid. Clicking a collection sets `libraryCollection` and shows the room view.
 - **Self (Profile):** "At a Glance" (shelves/carousels) vs "Feed" (vertical)
+
+### CollectionMosaic
+
+Defined locally in `Mind.tsx`. Fills its parent container — always wrap in a sized `div`. Smart layout by thumbnail count:
+
+| Count | Layout |
+|-------|--------|
+| 0 | Placeholder (warm-surface + library icon) |
+| 1 | Single full image |
+| 2 | Side-by-side (`grid-cols-2`, 1 row) |
+| 3–4 | 2×2 grid (`grid-cols-2 grid-rows-2`) — `grid-rows-2` is required for correct height in a fixed container |
+
+`getCollectionMosaicThumbnails(name, max)` in `mock.ts` returns up to `max` thumbnails from `libraryItems` for a given collection name.
 
 ## Naming Conventions
 
@@ -150,7 +172,8 @@ type ContentItem = {
 
 ```bash
 npm run dev
-# Runs on http://localhost:5173
+# Runs on http://localhost:5173 by default
+# .claude/launch.json configures Claude Code preview on port 5174
 ```
 
 ## Important Notes
