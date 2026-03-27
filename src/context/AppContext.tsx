@@ -32,7 +32,7 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [viewMode, setViewMode] = useState<ViewMode>('scroll');
+  const [viewMode, setViewMode] = useState<ViewMode>('scan');
   const [streamLens, setStreamLens] = useState<StreamLens>('following');
   const [selectedItem, setSelectedItemState] = useState<ContentItem | null>(null);
   const [contextPanelOpen, setContextPanelOpen] = useState(false);

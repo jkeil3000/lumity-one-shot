@@ -89,7 +89,12 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             {item.interests.slice(0, 2).map(tag => (
-              <span key={tag} className="text-[10px] text-ink-3 bg-surface-2 px-2 py-0.5 rounded-full">{tag}</span>
+              <span
+                key={tag}
+                className="text-[10px] text-[color:color-mix(in_srgb,var(--color-warm)_52%,var(--color-ink-2))] bg-[color:color-mix(in_srgb,var(--color-warm-surface)_58%,white)] px-2 py-0.5 rounded-full"
+              >
+                {tag}
+              </span>
             ))}
           </div>
           <div className="flex items-center gap-3">
@@ -161,7 +166,12 @@ function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boole
         {item.interests.length > 0 && (
           <div className="flex items-center gap-1 mt-2.5">
             {item.interests.slice(0, 2).map(tag => (
-              <span key={tag} className="text-[9px] text-ink-4 bg-surface-2 px-1.5 py-0.5 rounded-full">{tag}</span>
+              <span
+                key={tag}
+                className="text-[9px] text-[color:color-mix(in_srgb,var(--color-warm)_48%,var(--color-ink-2))] bg-[color:color-mix(in_srgb,var(--color-warm-surface)_54%,white)] px-1.5 py-0.5 rounded-full"
+              >
+                {tag}
+              </span>
             ))}
           </div>
         )}

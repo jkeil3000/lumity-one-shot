@@ -3,9 +3,9 @@ import { Palette } from 'lucide-react';
 import { useTheme, themes, type ThemeId } from '../context/ThemeContext';
 
 const themeAccents: Record<ThemeId, string> = {
-  lumity: '#B5603B',
-  midnight: '#C9A84C',
-  stone: '#4A6741',
+  lumity: '#433A78',
+  midnight: '#8BC7B4',
+  stone: '#476A5B',
 };
 
 export default function ThemeSwitcher() {
@@ -36,7 +36,7 @@ export default function ThemeSwitcher() {
                     className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-offset-1 ring-offset-surface-1"
                     style={{
                       background: themeAccents[t.id],
-                      ringColor: theme === t.id ? themeAccents[t.id] : 'transparent',
+                      borderColor: theme === t.id ? themeAccents[t.id] : 'transparent',
                     }}
                   />
                   <div className="min-w-0">

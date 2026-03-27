@@ -2,22 +2,22 @@
 
 @theme {
   /* ── Default (Lumity) tokens ── */
-  --color-surface-0: #F6F5F1;
-  --color-surface-1: #FFFFFF;
-  --color-surface-2: #EEEEE8;
-  --color-surface-3: #E4E3DD;
+  --color-surface-0: #F6F3EC;
+  --color-surface-1: #FFFCF8;
+  --color-surface-2: #ECE7DE;
+  --color-surface-3: #D7D2C8;
 
-  --color-ink-1: #1A1916;
-  --color-ink-2: #54524B;
-  --color-ink-3: #8A887F;
-  --color-ink-4: #BAB8B0;
+  --color-ink-1: #171B1F;
+  --color-ink-2: #4C565D;
+  --color-ink-3: #7E888E;
+  --color-ink-4: #B1B9BE;
 
-  --color-rule: #E2E1DB;
-  --color-rule-faint: #EEEDEA;
+  --color-rule: #DDD8D0;
+  --color-rule-faint: #ECE8E1;
 
-  --color-warm: #B5603B;
-  --color-warm-hover: #9E5333;
-  --color-warm-surface: #FBF3EE;
+  --color-warm: #433A78;
+  --color-warm-hover: #362F63;
+  --color-warm-surface: #E8E4F5;
 
   --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
   --font-reading: 'Lora', 'Georgia', serif;
@@ -30,22 +30,22 @@
    achievement, directional purpose.
    ═══════════════════════════════════════════ */
 [data-theme="midnight"] {
-  --color-surface-0: #0E0E13;
-  --color-surface-1: #16161D;
-  --color-surface-2: #222230;
-  --color-surface-3: #2E2E3A;
+  --color-surface-0: #10151A;
+  --color-surface-1: #172027;
+  --color-surface-2: #21303A;
+  --color-surface-3: #2E414D;
 
-  --color-ink-1: #E6E4DF;
-  --color-ink-2: #A5A29C;
-  --color-ink-3: #6E6B66;
-  --color-ink-4: #48463F;
+  --color-ink-1: #EEF1EE;
+  --color-ink-2: #B9C7C5;
+  --color-ink-3: #7C8E92;
+  --color-ink-4: #53626A;
 
-  --color-rule: #282832;
-  --color-rule-faint: #1F1F28;
+  --color-rule: #233039;
+  --color-rule-faint: #1B252D;
 
-  --color-warm: #C9A84C;
-  --color-warm-hover: #B89840;
-  --color-warm-surface: #1C1A12;
+  --color-warm: #8BC7B4;
+  --color-warm-hover: #73B29E;
+  --color-warm-surface: #18302E;
 
   --font-reading: 'Playfair Display', 'Georgia', serif;
 }
@@ -58,22 +58,23 @@
    as fulfillment of nature.
    ═══════════════════════════════════════════ */
 [data-theme="stone"] {
-  --color-surface-0: #F0EDE7;
-  --color-surface-1: #F9F8F5;
-  --color-surface-2: #E5E2DA;
-  --color-surface-3: #D8D5CC;
+  --color-surface-0: #EEF2EC;
+  --color-surface-1: #F8FBF6;
+  --color-surface-2: #E2E8E0;
+  --color-surface-3: #CBD4C8;
 
-  --color-ink-1: #1C1F1A;
-  --color-ink-2: #484E42;
-  --color-ink-3: #767C6E;
-  --color-ink-4: #A4A99A;
+  --color-ink-1: #1C231F;
+  --color-ink-2: #4A564D;
+  --color-ink-3: #79867B;
+  --color-ink-4: #AAB4A8;
 
-  --color-rule: #D6D3C8;
-  --color-rule-faint: #E5E3DA;
+  --color-rule: #D4DCD2;
+  --color-rule-faint: #E5EBE3;
 
-  --color-warm: #4A6741;
-  --color-warm-hover: #3C5736;
-  --color-warm-surface: #ECF0E9;
+  /* Keep the fresh green direction available here */
+  --color-warm: #476A5B;
+  --color-warm-hover: #385447;
+  --color-warm-surface: #E1ECE6;
 
   --font-reading: 'Source Serif 4', 'Georgia', serif;
 }
@@ -86,7 +87,11 @@
   }
 
   body {
-    background: var(--color-surface-0);
+    background:
+      radial-gradient(circle at top left, color-mix(in srgb, var(--color-warm) 16%, transparent) 0%, transparent 28%),
+      radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--color-surface-3) 46%, transparent) 0%, transparent 24%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface-1) 82%, white), var(--color-surface-0) 52%, color-mix(in srgb, var(--color-surface-0) 88%, var(--color-surface-2))),
+      var(--color-surface-0);
     color: var(--color-ink-1);
     font-family: var(--font-sans);
     line-height: 1.5;
@@ -112,7 +117,13 @@
   .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
 
   .gradient-overlay {
-    background: linear-gradient(to top, rgba(26, 25, 22, 0.7) 0%, rgba(26, 25, 22, 0.15) 50%, transparent 100%);
+    background: linear-gradient(to top, rgba(18, 24, 30, 0.72) 0%, rgba(18, 24, 30, 0.18) 52%, transparent 100%);
+  }
+
+  .panel-glow {
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--color-ink-1) 4%, transparent),
+      0 18px 40px color-mix(in srgb, var(--color-warm) 8%, transparent);
   }
 }
 

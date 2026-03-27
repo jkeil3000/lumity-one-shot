@@ -1,63 +1,48 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Bell, MessageCircle, Home, Radio, Library, User, Compass, Archive, Waves } from 'lucide-react';
+import { Plus, Bell, MessageCircle, Home, Radio, Library, User, Compass } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { useTheme } from '../context/ThemeContext';
 
 export default function NavRail() {
   const location = useLocation();
   const navigate = useNavigate();
   const { setCaptureOpen, notificationsOpen, setNotificationsOpen, messagesOpen, setMessagesOpen } = useApp();
-  const { isTelos } = useTheme();
   const isActive = (path: string) => location.pathname === path;
-
-  // Telos rebrands the nav language — more directional, purposeful
-  const brandLetter = isTelos ? 'T' : 'L';
-  const brandName = isTelos ? 'Telos' : 'Lumity';
-  const captureLabel = isTelos ? 'Commit' : 'Capture';
-  const captureKey = isTelos ? 'C' : 'N';
-
-  const navItems = isTelos
-    ? [
-        { icon: Compass, label: 'Home', path: '/' },
-        { icon: Waves, label: 'Current', path: '/stream' },
-        { icon: Archive, label: 'Vault', path: '/mind' },
-        { icon: User, label: 'Self', path: '/self' },
-      ]
-    : [
-        { icon: Home, label: 'Home', path: '/' },
-        { icon: Radio, label: 'Stream', path: '/stream' },
-        { icon: Library, label: 'Mind', path: '/mind' },
-        { icon: User, label: 'Profile', path: '/self' },
-      ];
+  const navItems = [
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: Compass, label: 'Explore', path: '/explore' },
+    { icon: Radio, label: 'Stream', path: '/stream' },
+    { icon: Library, label: 'Mind', path: '/mind' },
+    { icon: User, label: 'Profile', path: '/self' },
+  ];
 
   return (
     <nav className="w-[220px] h-screen flex flex-col border-r border-rule bg-surface-1 flex-shrink-0 select-none">
       {/* Brand */}
       <div className="px-6 pt-7 pb-6">
         <button onClick={() => navigate('/')} className="flex items-center gap-2.5 group">
-          <span className="w-7 h-7 rounded-lg bg-warm flex items-center justify-center text-white text-[13px] font-semibold tracking-tight">
-            {brandLetter}
+          <span className="w-7 h-7 rounded-lg bg-[linear-gradient(135deg,var(--color-warm),color-mix(in_srgb,var(--color-warm)_70%,white))] flex items-center justify-center text-white text-[13px] font-semibold tracking-tight shadow-[0_8px_20px_color-mix(in_srgb,var(--color-warm)_22%,transparent)]">
+            L
           </span>
-          <span className="text-[15px] font-semibold text-ink-1 tracking-[-0.01em]">{brandName}</span>
+          <span className="text-[15px] font-semibold text-ink-1 tracking-[-0.01em]">Lumity</span>
         </button>
       </div>
 
-      {/* Capture / Commit */}
+      {/* Capture */}
       <div className="px-4 mb-6">
         <button
           onClick={() => setCaptureOpen(true)}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-surface-0 hover:bg-surface-2 text-ink-2 hover:text-ink-1 transition-colors text-[13px] font-medium"
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white hover:bg-[color:color-mix(in_srgb,var(--color-warm)_6%,white)] text-ink-2 hover:text-ink-1 border border-rule-faint transition-colors text-[13px] font-medium"
         >
           <Plus size={16} strokeWidth={2} />
-          <span>{captureLabel}</span>
-          <span className="ml-auto text-[11px] text-ink-4 font-normal">{captureKey}</span>
+          <span>Capture</span>
+          <span className="ml-auto text-[11px] text-ink-4 font-normal">N</span>
         </button>
       </div>
 
       {/* Main Nav */}
       <div className="px-4 flex-1">
         <div className="mb-2 px-3 text-[11px] font-medium text-ink-4 uppercase tracking-[0.06em]">
-          {isTelos ? 'Navigate' : 'Navigate'}
+          Navigate
         </div>
         {navItems.map(item => (
           <NavLink
@@ -76,7 +61,9 @@ export default function NavRail() {
           <button
             onClick={() => { setNotificationsOpen(!notificationsOpen); setMessagesOpen(false); }}
             className={`w-full flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] transition-colors ${
-              notificationsOpen ? 'bg-surface-2 text-ink-1' : 'text-ink-3 hover:text-ink-2 hover:bg-surface-0'
+              notificationsOpen
+                ? 'bg-white text-ink-1 ring-1 ring-[color:color-mix(in_srgb,var(--color-warm)_18%,transparent)] shadow-[0_6px_18px_color-mix(in_srgb,var(--color-warm)_10%,transparent)]'
+                : 'text-ink-3 hover:text-ink-2 hover:bg-white'
             }`}
           >
             <div className="relative">
@@ -88,7 +75,9 @@ export default function NavRail() {
           <button
             onClick={() => { setMessagesOpen(!messagesOpen); setNotificationsOpen(false); }}
             className={`w-full flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] transition-colors ${
-              messagesOpen ? 'bg-surface-2 text-ink-1' : 'text-ink-3 hover:text-ink-2 hover:bg-surface-0'
+              messagesOpen
+                ? 'bg-white text-ink-1 ring-1 ring-[color:color-mix(in_srgb,var(--color-warm)_18%,transparent)] shadow-[0_6px_18px_color-mix(in_srgb,var(--color-warm)_10%,transparent)]'
+                : 'text-ink-3 hover:text-ink-2 hover:bg-white'
             }`}
           >
             <MessageCircle size={15} strokeWidth={1.8} />
@@ -106,8 +95,8 @@ function NavLink({ icon: Icon, label, active, onClick }: { icon: React.Component
       onClick={onClick}
       className={`w-full flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] transition-colors mb-[2px] ${
         active
-          ? 'bg-surface-2 text-ink-1 font-medium'
-          : 'text-ink-3 hover:text-ink-2 hover:bg-surface-0'
+          ? 'bg-white text-ink-1 font-medium ring-1 ring-[color:color-mix(in_srgb,var(--color-warm)_18%,transparent)] shadow-[0_6px_18px_color-mix(in_srgb,var(--color-warm)_10%,transparent)]'
+          : 'text-ink-3 hover:text-ink-2 hover:bg-white'
       }`}
     >
       <Icon size={15} strokeWidth={1.8} />

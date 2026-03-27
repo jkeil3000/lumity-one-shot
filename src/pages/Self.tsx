@@ -317,7 +317,6 @@ function ViewAllSection({
     target.kind === 'shelf' ? target.interest : null
   );
 
-  const title = target.kind === 'pinned' ? 'Pinned' : (activeInterest ?? target.interest);
   const allItems = target.kind === 'pinned'
     ? pinned
     : interestShelves.find(s => s.interest === (activeInterest ?? target.interest))?.items ?? [];

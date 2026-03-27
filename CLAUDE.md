@@ -49,7 +49,7 @@ All source code lives in this directory (`/Users/jeffreykeil/Dev/LUMITY ONE SHOT
 - **React 19** + **TypeScript** (strict mode, ES2023 target)
 - **Vite 8** with `@vitejs/plugin-react` (Oxc transform)
 - **Tailwind CSS v4** via `@tailwindcss/vite` — uses `@theme` directive and cascade layers
-- **React Router v7** — flat 4-page routing (Home, Stream, Mind, Self)
+- **React Router v7** — flat 5-page routing (Home, Explore, Stream, Mind, Self)
 - **Lucide React** for icons
 - **No backend** — all data is mock (`src/data/mock.ts`)
 
@@ -57,7 +57,7 @@ All source code lives in this directory (`/Users/jeffreykeil/Dev/LUMITY ONE SHOT
 
 ```
 src/
-├── pages/           # Route-level views: Home, Stream, Mind, Self
+├── pages/           # Route-level views: Home, Explore, Stream, Mind, Self
 ├── components/      # Shared UI: NavRail, ContextPanel, CaptureSheet, panels
 │   └── cards/       # ContentCard (large/medium/compact), AvatarCircle, carousel, etc.
 ├── context/         # AppContext (all app state), ThemeContext (theme switching)
@@ -78,9 +78,9 @@ Three themes selected via `data-theme` attribute on `<html>`:
 
 | Theme | Surface | Accent | Vibe |
 |-------|---------|--------|------|
-| **Lumity** (default) | warm cream `#F6F5F1` | terracotta `#B5603B` | editorial, warm |
-| **Midnight Compass** | very dark `#0E0E13` | gold `#C9A84C` | focused, nocturnal |
-| **Stone & Sage** | pale beige `#F0EDE7` | olive `#4A6741` | grounded, natural |
+| **Lumity** (default) | parchment `#F6F3EC` | deep indigo `#433A78` | fresh, editorial, clean |
+| **Midnight Compass** | blue-black `#10151A` | sea-glass `#8BC7B4` | focused, luminous |
+| **Stone & Sage** | soft sage `#EEF2EC` | forest green `#476A5B` | grounded, natural |
 
 ### Tokens
 
@@ -89,6 +89,7 @@ Three themes selected via `data-theme` attribute on `<html>`:
 - **Borders:** `rule`, `rule-faint`
 - **Accent:** `warm`, `warm-hover`, `warm-surface`
 - **Fonts:** Inter (`--font-sans`) for UI, Lora (`--font-reading`) for reading content
+- Default UI accents should feel cool, polished, and clean. Prefer white or lightly tinted indigo surfaces for nav highlights, pills, and summary controls before reaching for beige fills.
 
 ### CSS Rules
 
