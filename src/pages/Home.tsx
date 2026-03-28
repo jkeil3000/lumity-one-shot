@@ -144,7 +144,7 @@ export default function Home() {
     ? 'flex items-center gap-2 rounded-full border border-[color:color-mix(in_srgb,var(--color-warm)_18%,transparent)] bg-surface-1 px-4 py-2 text-[12px] font-medium text-white hover:text-warm hover:border-[color:color-mix(in_srgb,var(--color-warm)_34%,transparent)] transition-all duration-200 flex-shrink-0 shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_0_10px_color-mix(in_srgb,var(--color-warm)_8%,transparent)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_0_16px_color-mix(in_srgb,var(--color-warm)_14%,transparent)]'
     : 'flex items-center gap-2 rounded-full border border-[color:color-mix(in_srgb,var(--color-warm)_26%,var(--color-rule))] bg-warm px-4 py-2 text-[12px] font-medium text-white hover:bg-warm-hover transition-all duration-200 flex-shrink-0 shadow-[0_0_0_1px_rgba(39,67,54,0.02),0_0_10px_color-mix(in_srgb,var(--color-warm)_8%,transparent)] hover:shadow-[0_0_0_1px_rgba(39,67,54,0.04),0_0_16px_color-mix(in_srgb,var(--color-warm)_14%,transparent)]';
   const pillClassName = isDarkHome
-    ? 'text-[11px] text-white px-3 py-1 rounded-full bg-[color:color-mix(in_srgb,var(--color-warm-surface)_42%,white)] border border-transparent'
+    ? 'text-[11px] text-[var(--home-page-deep)] px-3 py-1 rounded-full bg-[color:color-mix(in_srgb,var(--color-warm-surface)_42%,white)] border border-transparent'
     : 'text-[11px] text-white px-3 py-1 rounded-full bg-[linear-gradient(180deg,var(--color-warm),color-mix(in_srgb,var(--color-warm)_84%,black))] border border-[color:color-mix(in_srgb,var(--color-warm)_18%,transparent)] shadow-[0_10px_20px_color-mix(in_srgb,var(--color-warm)_12%,transparent)]';
 
   return (
@@ -155,7 +155,7 @@ export default function Home() {
         ['--home-post-pill-bg' as string]: isDarkHome
           ? 'color-mix(in srgb, var(--color-warm-surface) 42%, white)'
           : 'linear-gradient(180deg,var(--color-warm),color-mix(in srgb,var(--color-warm) 84%,black))',
-        ['--home-post-pill-fg' as string]: isDarkHome ? '#EEF1EE' : '#ffffff',
+        ['--home-post-pill-fg' as string]: isDarkHome ? '#173528' : '#ffffff',
         background: homeBackground,
       }}
     >
