@@ -66,6 +66,19 @@ export interface QuietPrompt {
   text: string;
 }
 
+export interface ActivityEvent {
+  id: string;
+  type:
+    | 'save_item'
+    | 'share_item'
+    | 'create_thought'
+    | 'open_item'
+    | 'comment_post'
+    | 'grace_restore';
+  timestamp: string;
+  effectiveDateKey?: string;
+}
+
 // --- Users ---
 
 export const currentUser: User = {
@@ -449,6 +462,42 @@ export const themeCards = allInterests.slice(0, 8).map((name, i) => ({
   itemCount: Math.floor(Math.random() * 20) + 5,
   thumbnail: `https://picsum.photos/seed/theme-${i}/400/300`,
 }));
+
+function formatLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function atLocalNoon(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+}
+
+function shiftLocalDays(date: Date, amount: number) {
+  const next = atLocalNoon(date);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function seedActivityEvents(): ActivityEvent[] {
+  const now = atLocalNoon(new Date());
+  const offsets = [0, -1, -2, -3, -4, -5, -6, -8, -9, -10, -12, -15, -18, -21];
+
+  return offsets.map((offset, index) => {
+    const date = shiftLocalDays(now, offset);
+    const typeCycle: ActivityEvent['type'][] = ['open_item', 'save_item', 'share_item', 'create_thought'];
+
+    return {
+      id: `ae-${index + 1}`,
+      type: typeCycle[index % typeCycle.length],
+      timestamp: date.toISOString(),
+      effectiveDateKey: formatLocalDateKey(date),
+    };
+  });
+}
+
+export const activityEventsSeed = seedActivityEvents();
 
 // --- Helper functions ---
 

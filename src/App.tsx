@@ -7,6 +7,7 @@ import CaptureSheet from './components/CaptureSheet';
 import NotificationsPanel from './components/NotificationsPanel';
 import MessagesPanel from './components/MessagesPanel';
 import ThemeSwitcher from './components/ThemeSwitcher';
+import StreakModal from './components/StreakModal';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Stream from './pages/Stream';
@@ -33,6 +34,7 @@ export default function App() {
             </main>
             <ContextPanel />
             <CaptureSheet />
+            <StreakModal />
             <ThemeSwitcher />
           </div>
         </AppProvider>

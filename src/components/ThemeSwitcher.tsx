@@ -3,7 +3,7 @@ import { Palette } from 'lucide-react';
 import { useTheme, themes, type ThemeId } from '../context/ThemeContext';
 
 const themeAccents: Record<ThemeId, string> = {
-  lumity: '#433A78',
+  lumity: '#274336',
   midnight: '#8BC7B4',
   stone: '#476A5B',
 };
@@ -19,7 +19,7 @@ export default function ThemeSwitcher() {
           <div className="fixed inset-0 z-[59]" onClick={() => setOpen(false)} />
           <div className="absolute bottom-14 right-0 w-[280px] bg-surface-1 border border-rule rounded-xl shadow-2xl p-4 anim-scale-in z-[61]">
             <div className="text-[11px] font-medium text-ink-4 uppercase tracking-[0.06em] mb-3">
-              Theme Mockups
+              Themes
             </div>
             <div className="space-y-2">
               {themes.map(t => (
@@ -52,7 +52,7 @@ export default function ThemeSwitcher() {
       <button
         onClick={() => setOpen(!open)}
         className="w-10 h-10 rounded-full bg-warm text-white flex items-center justify-center shadow-lg hover:bg-warm-hover transition-colors"
-        title="Switch theme mockup"
+        title="Switch theme"
       >
         <Palette size={18} strokeWidth={1.8} />
       </button>

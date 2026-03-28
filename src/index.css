@@ -2,22 +2,22 @@
 
 @theme {
   /* ── Default (Lumity) tokens ── */
-  --color-surface-0: #F6F3EC;
-  --color-surface-1: #FFFCF8;
-  --color-surface-2: #ECE7DE;
-  --color-surface-3: #D7D2C8;
+  --color-surface-0: #F2F4EF;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F6F8F3;
+  --color-surface-3: #DFE6DC;
 
-  --color-ink-1: #171B1F;
-  --color-ink-2: #4C565D;
-  --color-ink-3: #7E888E;
-  --color-ink-4: #B1B9BE;
+  --color-ink-1: #274336;
+  --color-ink-2: #4A6155;
+  --color-ink-3: #75867D;
+  --color-ink-4: #A3AEA8;
 
-  --color-rule: #DDD8D0;
-  --color-rule-faint: #ECE8E1;
+  --color-rule: #D9E1D7;
+  --color-rule-faint: #EDF2EB;
 
-  --color-warm: #433A78;
-  --color-warm-hover: #362F63;
-  --color-warm-surface: #E8E4F5;
+  --color-warm: #274336;
+  --color-warm-hover: #1F382C;
+  --color-warm-surface: #E7EEE8;
 
   --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
   --font-reading: 'Lora', 'Georgia', serif;
@@ -37,8 +37,8 @@
 
   --color-ink-1: #EEF1EE;
   --color-ink-2: #B9C7C5;
-  --color-ink-3: #7C8E92;
-  --color-ink-4: #53626A;
+  --color-ink-3: #A4B4B7;
+  --color-ink-4: #7D9096;
 
   --color-rule: #233039;
   --color-rule-faint: #1B252D;
@@ -88,9 +88,9 @@
 
   body {
     background:
-      radial-gradient(circle at top left, color-mix(in srgb, var(--color-warm) 16%, transparent) 0%, transparent 28%),
-      radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--color-surface-3) 46%, transparent) 0%, transparent 24%),
-      linear-gradient(180deg, color-mix(in srgb, var(--color-surface-1) 82%, white), var(--color-surface-0) 52%, color-mix(in srgb, var(--color-surface-0) 88%, var(--color-surface-2))),
+      radial-gradient(circle at top left, color-mix(in srgb, var(--color-warm) 5%, transparent) 0%, transparent 28%),
+      radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--color-surface-3) 24%, transparent) 0%, transparent 24%),
+      linear-gradient(180deg, #FFFFFF, var(--color-surface-0) 58%, color-mix(in srgb, var(--color-surface-0) 94%, var(--color-surface-2))),
       var(--color-surface-0);
     color: var(--color-ink-1);
     font-family: var(--font-sans);
@@ -123,7 +123,7 @@
   .panel-glow {
     box-shadow:
       0 1px 0 color-mix(in srgb, var(--color-ink-1) 4%, transparent),
-      0 18px 40px color-mix(in srgb, var(--color-warm) 8%, transparent);
+      0 16px 36px rgba(18, 28, 24, 0.05);
   }
 }
 

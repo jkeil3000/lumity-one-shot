@@ -9,9 +9,8 @@ interface ThemeInfo {
 }
 
 export const themes: ThemeInfo[] = [
-  { id: 'lumity', name: 'Lumity', subtitle: 'Original — warm & editorial' },
-  { id: 'midnight', name: 'Midnight Compass', subtitle: 'Dark · gold accent · focused' },
-  { id: 'stone', name: 'Stone & Sage', subtitle: 'Light · olive accent · grounded' },
+  { id: 'lumity', name: 'Light', subtitle: 'Original · clean & editorial' },
+  { id: 'midnight', name: 'Dark', subtitle: 'Midnight Compass · focused' },
 ];
 
 interface ThemeContextValue {
