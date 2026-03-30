@@ -51,6 +51,44 @@ const homePaletteDark = {
   '--color-warm-surface': '#18302E',
 } as CSSProperties;
 
+const homePaletteNavy = {
+  '--home-page': '#0E1522',
+  '--home-page-deep': '#101A2B',
+  '--home-tertiary': '#5B4C77',
+  '--color-surface-0': '#0E1522',
+  '--color-surface-1': '#152033',
+  '--color-surface-2': '#1D2C45',
+  '--color-surface-3': '#2A3E60',
+  '--color-ink-1': '#EFF4F9',
+  '--color-ink-2': '#C5D2E0',
+  '--color-ink-3': '#A3B2C4',
+  '--color-ink-4': '#75869A',
+  '--color-rule': '#223149',
+  '--color-rule-faint': '#182339',
+  '--color-warm': '#7AA2D6',
+  '--color-warm-hover': '#94B8E8',
+  '--color-warm-surface': '#1C2D49',
+} as CSSProperties;
+
+const homePaletteIndigo = {
+  '--home-page': '#141321',
+  '--home-page-deep': '#17162A',
+  '--home-tertiary': '#5A4A86',
+  '--color-surface-0': '#141321',
+  '--color-surface-1': '#1C1B30',
+  '--color-surface-2': '#282645',
+  '--color-surface-3': '#3A3762',
+  '--color-ink-1': '#F3F2FB',
+  '--color-ink-2': '#D2CFE8',
+  '--color-ink-3': '#ACA8CD',
+  '--color-ink-4': '#7C78A0',
+  '--color-rule': '#2A2747',
+  '--color-rule-faint': '#201E37',
+  '--color-warm': '#8A7AE6',
+  '--color-warm-hover': '#A293F2',
+  '--color-warm-surface': '#2A2550',
+} as CSSProperties;
+
 function SummaryMetric({
   value,
   label,
@@ -89,7 +127,7 @@ export default function Home() {
   const { setSelectedItem, library, streakSummary, setStreakOpen } = useApp();
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const isDarkHome = theme === 'midnight';
+  const isDarkHome = theme === 'midnight' || theme === 'navy' || theme === 'indigo';
 
   const friendActivity = getFriendActivity();
   const recommendations = getRecommendations();
@@ -113,7 +151,13 @@ export default function Home() {
     ? 'Yesterday can still be recovered.'
     : 'A steady rhythm matters here more than volume.';
 
-  const homePalette = isDarkHome ? homePaletteDark : homePaletteLight;
+  const homePalette = theme === 'midnight'
+    ? homePaletteDark
+    : theme === 'navy'
+      ? homePaletteNavy
+      : theme === 'indigo'
+        ? homePaletteIndigo
+      : homePaletteLight;
   const homeBackground = isDarkHome
     ? `
       radial-gradient(circle at 14% 12%, color-mix(in srgb, var(--color-warm) 10%, transparent) 0%, transparent 24%),

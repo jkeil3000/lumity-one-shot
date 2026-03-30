@@ -50,6 +50,48 @@
   --font-reading: 'Playfair Display', 'Georgia', serif;
 }
 
+[data-theme="navy"] {
+  --color-surface-0: #0E1522;
+  --color-surface-1: #152033;
+  --color-surface-2: #1D2C45;
+  --color-surface-3: #2A3E60;
+
+  --color-ink-1: #EFF4F9;
+  --color-ink-2: #C5D2E0;
+  --color-ink-3: #A3B2C4;
+  --color-ink-4: #75869A;
+
+  --color-rule: #223149;
+  --color-rule-faint: #182339;
+
+  --color-warm: #7AA2D6;
+  --color-warm-hover: #94B8E8;
+  --color-warm-surface: #1C2D49;
+
+  --font-reading: 'Playfair Display', 'Georgia', serif;
+}
+
+[data-theme="indigo"] {
+  --color-surface-0: #141321;
+  --color-surface-1: #1C1B30;
+  --color-surface-2: #282645;
+  --color-surface-3: #3A3762;
+
+  --color-ink-1: #F3F2FB;
+  --color-ink-2: #D2CFE8;
+  --color-ink-3: #ACA8CD;
+  --color-ink-4: #7C78A0;
+
+  --color-rule: #2A2747;
+  --color-rule-faint: #201E37;
+
+  --color-warm: #8A7AE6;
+  --color-warm-hover: #A293F2;
+  --color-warm-surface: #2A2550;
+
+  --font-reading: 'Playfair Display', 'Georgia', serif;
+}
+
 /* ═══════════════════════════════════════════
    MOCKUP B — Stone & Sage (Light / Olive)
    Ancient architecture, a forest path.

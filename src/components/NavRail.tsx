@@ -49,7 +49,7 @@ export default function NavRail() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { setCaptureOpen, notificationsOpen, setNotificationsOpen, messagesOpen, setMessagesOpen } = useApp();
-  const isMidnight = theme === 'midnight';
+  const isMidnight = theme === 'midnight' || theme === 'navy' || theme === 'indigo';
   const isStone = theme === 'stone';
   const isLumity = theme === 'lumity';
   const isLumityHome = isLumity && location.pathname === '/';
