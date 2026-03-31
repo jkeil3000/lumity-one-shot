@@ -68,7 +68,7 @@ export interface QuietPrompt {
 
 // --- Users ---
 
-export const currentUser: User = {
+const _mockCurrentUser: User = {
   id: 'u0',
   username: 'you',
   displayName: 'You',
@@ -81,6 +81,33 @@ export const currentUser: User = {
   followersCount: 142,
   savesSharedCount: 87,
 };
+
+export function getCurrentUser(): User {
+  try {
+    const raw = window.localStorage.getItem('user');
+    if (raw) {
+      const u = JSON.parse(raw) as Record<string, unknown>;
+      const id = String(u.id ?? u._id ?? '').trim();
+      if (id) {
+        return {
+          id,
+          username: typeof u.username === 'string' ? u.username : id,
+          displayName: typeof u.name === 'string' && u.name ? u.name : id,
+          bio: typeof u.bio === 'string' ? u.bio : '',
+          avatar: typeof u.avatar === 'string' && u.avatar ? u.avatar : `https://i.pravatar.cc/150?u=${id}`,
+          interests: [],
+          followersCount: 0,
+          savesSharedCount: 0,
+        };
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return _mockCurrentUser;
+}
+
+export const currentUser: User = _mockCurrentUser;
 
 const users: User[] = [
   {

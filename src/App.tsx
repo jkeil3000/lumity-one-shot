@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { isLoggedIn } from './lib/auth';
 import NavRail from './components/NavRail';
 import ContextPanel from './components/ContextPanel';
 import CaptureSheet from './components/CaptureSheet';
@@ -12,30 +13,40 @@ import Explore from './pages/Explore';
 import Stream from './pages/Stream';
 import Mind from './pages/Mind';
 import Self from './pages/Self';
+import Login from './pages/Login';
+
+function AppShell() {
+  return (
+    <AppProvider>
+      <div className="flex h-screen bg-surface-0 overflow-hidden relative">
+        <NavRail />
+        <NotificationsPanel />
+        <MessagesPanel />
+        <main className="flex-1 min-w-0 overflow-hidden bg-surface-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/stream" element={<Stream />} />
+            <Route path="/mind" element={<Mind />} />
+            <Route path="/self" element={<Self />} />
+          </Routes>
+        </main>
+        <ContextPanel />
+        <CaptureSheet />
+        <ThemeSwitcher />
+      </div>
+    </AppProvider>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <AppProvider>
-          <div className="flex h-screen bg-surface-0 overflow-hidden relative">
-            <NavRail />
-            <NotificationsPanel />
-            <MessagesPanel />
-            <main className="flex-1 min-w-0 overflow-hidden bg-surface-1">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/explore" element={<Explore />} />
-                <Route path="/stream" element={<Stream />} />
-                <Route path="/mind" element={<Mind />} />
-                <Route path="/self" element={<Self />} />
-              </Routes>
-            </main>
-            <ContextPanel />
-            <CaptureSheet />
-            <ThemeSwitcher />
-          </div>
-        </AppProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={isLoggedIn() ? <AppShell /> : <Navigate to="/login" replace />} />
+        </Routes>
       </ThemeProvider>
     </BrowserRouter>
   );

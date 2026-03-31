@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { MapPin, Link as LinkIcon, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import {
-  currentUser,
+  getCurrentUser,
   libraryItems,
   feedItems,
   collections,
@@ -11,6 +11,8 @@ import {
   getProfilePinned,
   getProfileLately,
 } from '../data/mock';
+
+const currentUser = getCurrentUser();
 import type { ContentItem } from '../data/mock';
 import AvatarCircle from '../components/cards/AvatarCircle';
 import ContentCard from '../components/cards/ContentCard';
