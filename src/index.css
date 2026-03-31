@@ -2,22 +2,22 @@
 
 @theme {
   /* ── Default (Lumity) tokens ── */
-  --color-surface-0: #F6F3EC;
-  --color-surface-1: #FFFCF8;
-  --color-surface-2: #ECE7DE;
-  --color-surface-3: #D7D2C8;
+  --color-surface-0: #F2F4EF;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F6F8F3;
+  --color-surface-3: #DFE6DC;
 
-  --color-ink-1: #171B1F;
-  --color-ink-2: #4C565D;
-  --color-ink-3: #7E888E;
-  --color-ink-4: #B1B9BE;
+  --color-ink-1: #274336;
+  --color-ink-2: #4A6155;
+  --color-ink-3: #75867D;
+  --color-ink-4: #A3AEA8;
 
-  --color-rule: #DDD8D0;
-  --color-rule-faint: #ECE8E1;
+  --color-rule: #D9E1D7;
+  --color-rule-faint: #EDF2EB;
 
-  --color-warm: #433A78;
-  --color-warm-hover: #362F63;
-  --color-warm-surface: #E8E4F5;
+  --color-warm: #274336;
+  --color-warm-hover: #1F382C;
+  --color-warm-surface: #E7EEE8;
 
   --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
   --font-reading: 'Lora', 'Georgia', serif;
@@ -30,22 +30,64 @@
    achievement, directional purpose.
    ═══════════════════════════════════════════ */
 [data-theme="midnight"] {
-  --color-surface-0: #10151A;
-  --color-surface-1: #172027;
-  --color-surface-2: #21303A;
-  --color-surface-3: #2E414D;
+  --color-surface-0: #0E1614;
+  --color-surface-1: #14211D;
+  --color-surface-2: #1C2F28;
+  --color-surface-3: #274038;
 
-  --color-ink-1: #EEF1EE;
-  --color-ink-2: #B9C7C5;
-  --color-ink-3: #7C8E92;
-  --color-ink-4: #53626A;
+  --color-ink-1: #EDF2EE;
+  --color-ink-2: #B5C9BF;
+  --color-ink-3: #95B0A4;
+  --color-ink-4: #728E82;
 
-  --color-rule: #233039;
-  --color-rule-faint: #1B252D;
+  --color-rule: #1E3329;
+  --color-rule-faint: #172720;
 
-  --color-warm: #8BC7B4;
-  --color-warm-hover: #73B29E;
-  --color-warm-surface: #18302E;
+  --color-warm: #50C878;
+  --color-warm-hover: #3FB86E;
+  --color-warm-surface: #152E22;
+
+  --font-reading: 'Playfair Display', 'Georgia', serif;
+}
+
+[data-theme="navy"] {
+  --color-surface-0: #0E1522;
+  --color-surface-1: #152033;
+  --color-surface-2: #1D2C45;
+  --color-surface-3: #2A3E60;
+
+  --color-ink-1: #EFF4F9;
+  --color-ink-2: #C5D2E0;
+  --color-ink-3: #A3B2C4;
+  --color-ink-4: #75869A;
+
+  --color-rule: #223149;
+  --color-rule-faint: #182339;
+
+  --color-warm: #7AA2D6;
+  --color-warm-hover: #94B8E8;
+  --color-warm-surface: #1C2D49;
+
+  --font-reading: 'Playfair Display', 'Georgia', serif;
+}
+
+[data-theme="indigo"] {
+  --color-surface-0: #141321;
+  --color-surface-1: #1C1B30;
+  --color-surface-2: #282645;
+  --color-surface-3: #3A3762;
+
+  --color-ink-1: #F3F2FB;
+  --color-ink-2: #D2CFE8;
+  --color-ink-3: #ACA8CD;
+  --color-ink-4: #7C78A0;
+
+  --color-rule: #2A2747;
+  --color-rule-faint: #201E37;
+
+  --color-warm: #8A7AE6;
+  --color-warm-hover: #A293F2;
+  --color-warm-surface: #2A2550;
 
   --font-reading: 'Playfair Display', 'Georgia', serif;
 }
@@ -88,9 +130,9 @@
 
   body {
     background:
-      radial-gradient(circle at top left, color-mix(in srgb, var(--color-warm) 16%, transparent) 0%, transparent 28%),
-      radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--color-surface-3) 46%, transparent) 0%, transparent 24%),
-      linear-gradient(180deg, color-mix(in srgb, var(--color-surface-1) 82%, white), var(--color-surface-0) 52%, color-mix(in srgb, var(--color-surface-0) 88%, var(--color-surface-2))),
+      radial-gradient(circle at top left, color-mix(in srgb, var(--color-warm) 5%, transparent) 0%, transparent 28%),
+      radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--color-surface-3) 24%, transparent) 0%, transparent 24%),
+      linear-gradient(180deg, #FFFFFF, var(--color-surface-0) 58%, color-mix(in srgb, var(--color-surface-0) 94%, var(--color-surface-2))),
       var(--color-surface-0);
     color: var(--color-ink-1);
     font-family: var(--font-sans);
@@ -123,7 +165,7 @@
   .panel-glow {
     box-shadow:
       0 1px 0 color-mix(in srgb, var(--color-ink-1) 4%, transparent),
-      0 18px 40px color-mix(in srgb, var(--color-warm) 8%, transparent);
+      0 16px 36px rgba(18, 28, 24, 0.05);
   }
 }
 

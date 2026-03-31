@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-export type ThemeId = 'lumity' | 'midnight' | 'stone';
+export type ThemeId = 'lumity' | 'midnight' | 'navy' | 'indigo' | 'stone';
 
 interface ThemeInfo {
   id: ThemeId;
@@ -9,9 +9,10 @@ interface ThemeInfo {
 }
 
 export const themes: ThemeInfo[] = [
-  { id: 'lumity', name: 'Lumity', subtitle: 'Original — warm & editorial' },
-  { id: 'midnight', name: 'Midnight Compass', subtitle: 'Dark · gold accent · focused' },
-  { id: 'stone', name: 'Stone & Sage', subtitle: 'Light · olive accent · grounded' },
+  { id: 'lumity', name: 'Light', subtitle: 'Original · clean & editorial' },
+  { id: 'midnight', name: 'Dark', subtitle: 'Midnight Compass · focused' },
+  { id: 'navy', name: 'Navy', subtitle: 'Midnight structure · blue mood' },
+  { id: 'indigo', name: 'Indigo', subtitle: 'Midnight structure · violet-blue mood' },
 ];
 
 interface ThemeContextValue {

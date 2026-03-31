@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/proxy': {
-        target: 'https://api.lummity.co',
+        target: 'https://api.lumityapp.com',
         changeOrigin: true,
         secure: false,
         rewrite: (path: string) => path.replace(/^\/api\/proxy/, '/api/v1'),

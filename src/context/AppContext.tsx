@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import { type ContentItem, feedItems, libraryItems } from '../data/mock';
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
+import { type ActivityEvent, type ContentItem, activityEventsSeed, feedItems, libraryItems } from '../data/mock';
 import { apiFetch } from '../lib/api';
 import { normalizePost, unwrapList } from '../lib/normalize';
+import { calculateStreakSummary } from '../utils/streak';
 
 type ViewMode = 'scroll' | 'scan';
 type StreamLens = 'following' | 'foryou' | string; // string = interest name
@@ -25,6 +26,12 @@ interface AppState {
   feed: ContentItem[];
   library: ContentItem[];
   addItem: (item: ContentItem) => void;
+  activityEvents: ActivityEvent[];
+  recordActivity: (type: ActivityEvent['type']) => void;
+  streakOpen: boolean;
+  setStreakOpen: (open: boolean) => void;
+  restoreStreakDay: (dateKey: string) => void;
+  streakSummary: ReturnType<typeof calculateStreakSummary>;
   notificationsOpen: boolean;
   setNotificationsOpen: (open: boolean) => void;
   messagesOpen: boolean;
@@ -84,6 +91,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [libraryCollection, setLibraryCollection] = useState<string | null>(null);
   const [feed, setFeed] = useState<ContentItem[]>(feedItems);
   const [library, setLibrary] = useState<ContentItem[]>(libraryItems);
+  const [activityEvents, setActivityEvents] = useState<ActivityEvent[]>(activityEventsSeed);
+  const [streakOpen, setStreakOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
 
@@ -96,9 +105,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const streakSummary = useMemo(() => calculateStreakSummary(activityEvents), [activityEvents]);
+
   const setSelectedItem = useCallback((item: ContentItem | null) => {
     setSelectedItemState(item);
     setContextPanelOpen(!!item);
+    if (item) {
+      setActivityEvents(prev => [
+        ...prev,
+        {
+          id: `ae-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          type: 'open_item',
+          timestamp: new Date().toISOString(),
+        },
+      ]);
+    }
+  }, []);
+
+  const recordActivity = useCallback((type: ActivityEvent['type']) => {
+    setActivityEvents(prev => [
+      ...prev,
+      {
+        id: `ae-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        type,
+        timestamp: new Date().toISOString(),
+      },
+    ]);
   }, []);
 
   const addItem = useCallback((item: ContentItem) => {
@@ -106,6 +138,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setFeed(prev => [item, ...prev]);
     }
     setLibrary(prev => [item, ...prev]);
+    recordActivity(item.type === 'thought' ? 'create_thought' : item.visibility === 'public' ? 'share_item' : 'save_item');
+  }, [recordActivity]);
+
+  const restoreStreakDay = useCallback((dateKey: string) => {
+    setActivityEvents(prev => {
+      if (prev.some(event => event.effectiveDateKey === dateKey && event.type === 'grace_restore')) {
+        return prev;
+      }
+
+      return [
+        ...prev,
+        {
+          id: `ae-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          type: 'grace_restore',
+          timestamp: new Date().toISOString(),
+          effectiveDateKey: dateKey,
+        },
+      ];
+    });
   }, []);
 
   return (
@@ -118,6 +169,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       libraryFilter, setLibraryFilter,
       libraryCollection, setLibraryCollection,
       feed, library, addItem,
+      activityEvents, recordActivity,
+      streakOpen, setStreakOpen, restoreStreakDay, streakSummary,
       notificationsOpen, setNotificationsOpen,
       messagesOpen, setMessagesOpen,
     }}>

@@ -58,6 +58,8 @@ export default function CaptureSheet() {
     else if (selectedInterests.length < 3) setSelectedInterests([...selectedInterests, i]);
   };
 
+  const primaryActionLabel = visibility === 'public' ? 'Share' : 'Save privately';
+
   const save = () => {
     if (!contentValue.trim() && !caption.trim()) return;
     const item: ContentItem = {
@@ -91,13 +93,22 @@ export default function CaptureSheet() {
         </button>
 
         <div className="p-5 pt-6">
+          <div className="mb-4">
+            <div className="text-[11px] uppercase tracking-[0.08em] text-ink-4 mb-1">
+              Share A Recommendation
+            </div>
+            <p className="text-[13px] text-ink-2">
+              Add something worth passing along, or keep it just for yourself.
+            </p>
+          </div>
+
           {/* Content field */}
           <input
             ref={inputRef}
             type="text"
             value={contentValue}
             onChange={e => setContentValue(e.target.value)}
-            placeholder="Paste a link, or start typing..."
+            placeholder="Paste a link, book, or start with a thought..."
             className="w-full text-[14px] text-ink-1 placeholder:text-ink-4 bg-transparent border-b border-rule-faint pb-3 mb-4 focus:outline-none focus:border-rule transition-colors"
           />
 
@@ -171,7 +182,7 @@ export default function CaptureSheet() {
               disabled={!contentValue.trim() && !caption.trim()}
               className="px-4 py-[6px] bg-warm text-white text-[13px] font-medium rounded-lg hover:bg-warm-hover transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
             >
-              Save
+              {primaryActionLabel}
             </button>
           </div>
         </div>
