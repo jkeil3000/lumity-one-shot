@@ -119,6 +119,7 @@ function LargeCard({ item, onClick }: { item: ContentItem; onClick: () => void }
 /* ─── Medium Card (Carousels) ─── */
 function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boolean; onClick: () => void }) {
   const isThought = item.type === 'thought';
+  const isBook = item.type === 'book';
 
   return (
     <div
@@ -133,12 +134,25 @@ function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boole
         </div>
       ) : item.thumbnail ? (
         <div className="relative h-[140px] overflow-hidden">
-          <img
-            src={item.thumbnail}
-            alt={item.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
-            loading="lazy"
-          />
+          {isBook ? (
+            <div className="h-full bg-[linear-gradient(145deg,color-mix(in_srgb,var(--color-warm-surface)_55%,white),color-mix(in_srgb,var(--color-surface-2)_72%,white))] px-5 py-3.5 flex items-center justify-center">
+              <div className="w-[72px] h-[108px] rounded-[10px] overflow-hidden bg-surface-1 border border-white/70 shadow-[0_14px_28px_rgba(15,23,42,0.16)] transition-transform duration-300 group-hover:scale-[1.05]">
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          ) : (
+            <img
+              src={item.thumbnail}
+              alt={item.title}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+              loading="lazy"
+            />
+          )}
           <div className="absolute top-2.5 left-2.5">
             <span className="text-[9px] font-semibold uppercase tracking-[0.06em] bg-surface-1/90 text-ink-2 px-2 py-0.5 rounded-full backdrop-blur-sm">
               {getTypeLabel(item.type)}
@@ -152,10 +166,10 @@ function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boole
       )}
 
       <div className="p-3.5">
-        <h3 className="text-[13px] font-semibold text-ink-1 leading-[1.35] line-clamp-2 mb-1.5 group-hover:text-warm transition-colors min-h-[36px]">
+        <h3 className="text-[13px] font-semibold text-ink-1 leading-[1.35] line-clamp-1 mb-0.5 group-hover:text-warm transition-colors">
           {item.title || item.caption.slice(0, 60)}
         </h3>
-        <p className="font-reading text-[11px] text-ink-3 leading-[1.5] line-clamp-2 mb-2.5">
+        <p className="text-[11px] text-ink-2 leading-[1.42] line-clamp-2 mb-2">
           {item.caption}
         </p>
         <div className="flex items-center gap-2">
@@ -168,7 +182,11 @@ function MediumCard({ item, fluid, onClick }: { item: ContentItem; fluid?: boole
             {item.interests.slice(0, 2).map(tag => (
               <span
                 key={tag}
-                className="text-[9px] text-[color:color-mix(in_srgb,var(--color-warm)_48%,var(--color-ink-2))] bg-[color:color-mix(in_srgb,var(--color-warm-surface)_54%,white)] px-1.5 py-0.5 rounded-full"
+                className="text-[9px] px-2.5 py-[0.35rem] rounded-full"
+                style={{
+                  color: 'var(--home-post-pill-fg, var(--home-page-deep))',
+                  background: 'var(--home-post-pill-bg, color-mix(in srgb, var(--color-warm-surface) 42%, white))',
+                }}
               >
                 {tag}
               </span>

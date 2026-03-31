@@ -66,6 +66,19 @@ export interface QuietPrompt {
   text: string;
 }
 
+export interface ActivityEvent {
+  id: string;
+  type:
+    | 'save_item'
+    | 'share_item'
+    | 'create_thought'
+    | 'open_item'
+    | 'comment_post'
+    | 'grace_restore';
+  timestamp: string;
+  effectiveDateKey?: string;
+}
+
 // --- Users ---
 
 const _mockCurrentUser: User = {
@@ -159,6 +172,61 @@ const users: User[] = [
     interests: ['Climate Tech', 'Science Communication', 'Philosophy'],
     followersCount: 743,
     savesSharedCount: 167,
+  },
+  {
+    id: 'u6',
+    username: 'ravi',
+    displayName: 'Ravi Mehta',
+    bio: 'Former PM at Tidal. Writing about product craft and creative process.',
+    avatar: 'https://i.pravatar.cc/150?u=ravi',
+    location: 'Brooklyn, NY',
+    interests: ['Product Design', 'Indie Software', 'Philosophy'],
+    followersCount: 1847,
+    savesSharedCount: 298,
+  },
+  {
+    id: 'u7',
+    username: 'elena',
+    displayName: 'Elena Voss',
+    bio: 'Neuroscientist. Exploring the edges of consciousness and memory.',
+    avatar: 'https://i.pravatar.cc/150?u=elena',
+    location: 'Berlin, DE',
+    interests: ['Neuroscience', 'Philosophy', 'Literature'],
+    followersCount: 632,
+    savesSharedCount: 189,
+  },
+  {
+    id: 'u8',
+    username: 'tomás',
+    displayName: 'Tomás Herrera',
+    bio: 'Architect turned systems thinker. Cities, climate, complexity.',
+    avatar: 'https://i.pravatar.cc/150?u=tomas',
+    location: 'Mexico City, MX',
+    interests: ['Climate Tech', 'Design Thinking', 'Philosophy'],
+    followersCount: 1102,
+    savesSharedCount: 341,
+  },
+  {
+    id: 'u9',
+    username: 'amara',
+    displayName: 'Amara Osei',
+    bio: 'Independent researcher. AI governance and digital rights.',
+    avatar: 'https://i.pravatar.cc/150?u=amara',
+    location: 'London, UK',
+    interests: ['AI Ethics', 'Philosophy', 'Science Communication'],
+    followersCount: 956,
+    savesSharedCount: 214,
+  },
+  {
+    id: 'u10',
+    username: 'kai',
+    displayName: 'Kai Nakamura',
+    bio: 'Designer and letterpress printer. Slow tools, careful work.',
+    avatar: 'https://i.pravatar.cc/150?u=kai',
+    location: 'Portland, OR',
+    interests: ['Design Thinking', 'Literature', 'Indie Software'],
+    followersCount: 478,
+    savesSharedCount: 156,
   },
 ];
 
@@ -477,6 +545,42 @@ export const themeCards = allInterests.slice(0, 8).map((name, i) => ({
   thumbnail: `https://picsum.photos/seed/theme-${i}/400/300`,
 }));
 
+function formatLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function atLocalNoon(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0);
+}
+
+function shiftLocalDays(date: Date, amount: number) {
+  const next = atLocalNoon(date);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function seedActivityEvents(): ActivityEvent[] {
+  const now = atLocalNoon(new Date());
+  const offsets = [0, -1, -2, -3, -4, -5, -6, -8, -9, -10, -12, -15, -18, -21];
+
+  return offsets.map((offset, index) => {
+    const date = shiftLocalDays(now, offset);
+    const typeCycle: ActivityEvent['type'][] = ['open_item', 'save_item', 'share_item', 'create_thought'];
+
+    return {
+      id: `ae-${index + 1}`,
+      type: typeCycle[index % typeCycle.length],
+      timestamp: date.toISOString(),
+      effectiveDateKey: formatLocalDateKey(date),
+    };
+  });
+}
+
+export const activityEventsSeed = seedActivityEvents();
+
 // --- Helper functions ---
 
 export function getFriendActivity(): ContentItem[] {
@@ -561,4 +665,49 @@ export function getProfileLately(): ContentItem[] {
 
 export function getProfileShared(): ContentItem[] {
   return libraryItems.filter(i => i.visibility === 'public');
+}
+
+// --- Explore page helpers ---
+
+export interface InterestTopic {
+  name: string;
+  description: string;
+  itemCount: number;
+  followerCount: number;
+  thumbnail: string;
+}
+
+export const exploreInterests: InterestTopic[] = [
+  { name: 'Design Thinking', description: 'Process, craft, and the space between intention and execution.', itemCount: 284, followerCount: 1420, thumbnail: 'https://picsum.photos/seed/int-design/400/300' },
+  { name: 'AI Ethics', description: 'The questions we should be asking before the answers are automated.', itemCount: 196, followerCount: 2310, thumbnail: 'https://picsum.photos/seed/int-ai/400/300' },
+  { name: 'Philosophy', description: 'How to think, why it matters, and what changes when you do.', itemCount: 341, followerCount: 1870, thumbnail: 'https://picsum.photos/seed/int-phil/400/300' },
+  { name: 'Neuroscience', description: 'The brain, the body, and the strange loops between them.', itemCount: 152, followerCount: 980, thumbnail: 'https://picsum.photos/seed/int-neuro/400/300' },
+  { name: 'Climate Tech', description: 'Optimism with receipts. Technology that might move the needle.', itemCount: 118, followerCount: 1540, thumbnail: 'https://picsum.photos/seed/int-climate/400/300' },
+  { name: 'Product Design', description: 'Building things people actually want to use, and why that\'s hard.', itemCount: 267, followerCount: 1680, thumbnail: 'https://picsum.photos/seed/int-product/400/300' },
+  { name: 'Literature', description: 'Books, essays, and the art of reading deeply.', itemCount: 203, followerCount: 1120, thumbnail: 'https://picsum.photos/seed/int-lit/400/300' },
+  { name: 'Indie Software', description: 'Small tools, independent makers, and software with a soul.', itemCount: 89, followerCount: 720, thumbnail: 'https://picsum.photos/seed/int-indie/400/300' },
+  { name: 'Productivity', description: 'Systems, habits, and the pursuit of doing less but better.', itemCount: 174, followerCount: 940, thumbnail: 'https://picsum.photos/seed/int-prod/400/300' },
+  { name: 'Science Communication', description: 'Making complex ideas accessible without making them simple.', itemCount: 96, followerCount: 560, thumbnail: 'https://picsum.photos/seed/int-scicomm/400/300' },
+];
+
+export function getExploreSuggestedPeople(): User[] {
+  // Returns users that share interests with the current user, excluding self
+  return users.filter(u => u.id !== currentUser.id)
+    .sort((a, b) => {
+      const aOverlap = a.interests.filter(i => currentUser.interests.includes(i)).length;
+      const bOverlap = b.interests.filter(i => currentUser.interests.includes(i)).length;
+      return bOverlap - aOverlap;
+    });
+}
+
+export function getExploreForYouContent(): ContentItem[] {
+  // Content from outside user's library, matching their interests
+  const userInterests = new Set(currentUser.interests);
+  return [...feedItems]
+    .filter(item => item.interests.some(i => userInterests.has(i)))
+    .sort((a, b) => b.likes - a.likes);
+}
+
+export function getExploreTrendingContent(): ContentItem[] {
+  return [...feedItems].sort((a, b) => b.likes - a.likes).slice(0, 6);
 }
