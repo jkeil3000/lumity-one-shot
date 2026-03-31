@@ -1,7 +1,139 @@
 import { X, Heart, MessageCircle, Bookmark, ArrowUpRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { getTypeLabel } from '../data/mock';
+import type { ContentItem } from '../data/mock';
 import AvatarCircle from './cards/AvatarCircle';
+
+function getHostname(url: string): string {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+}
+
+function getYouTubeId(url: string): string | null {
+  const m = url.match(/(?:v=|v\/|embed\/|youtu\.be\/)([^"&?/\s]{11})/i);
+  return m ? m[1] : null;
+}
+
+function getSpotifyEmbed(url: string): string | null {
+  const m = url.match(/spotify\.com\/(track|album|playlist|show|episode)\/([a-zA-Z0-9]+)/i);
+  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0` : null;
+}
+
+/* ─── Article link preview via microlink.io ─── */
+interface LinkMeta { title?: string; description?: string; image?: string; }
+
+function ArticlePreview({ url, fallbackTitle, fallbackThumb }: { url: string; fallbackTitle?: string; fallbackThumb?: string }) {
+  const [meta, setMeta] = useState<LinkMeta | null>(null);
+  const [status, setStatus] = useState<'loading' | 'done' | 'error'>('loading');
+
+  useEffect(() => {
+    setStatus('loading');
+    setMeta(null);
+    fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`)
+      .then(r => r.json())
+      .then(json => {
+        if (json?.status === 'success') {
+          setMeta({
+            title: json.data?.title ?? undefined,
+            description: json.data?.description ?? undefined,
+            image: json.data?.image?.url ?? undefined,
+          });
+          setStatus('done');
+        } else {
+          setStatus('error');
+        }
+      })
+      .catch(() => setStatus('error'));
+  }, [url]);
+
+  const image = meta?.image || fallbackThumb;
+  const title = meta?.title || fallbackTitle;
+  const hostname = getHostname(url);
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className="block mx-6 mt-5 rounded-xl border border-rule overflow-hidden hover:border-warm/40 transition-colors group"
+      onClick={e => e.stopPropagation()}
+    >
+      {image && (
+        <div className="aspect-[2/1] overflow-hidden bg-surface-2">
+          <img src={image} alt={title || ''} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" />
+        </div>
+      )}
+      <div className="px-4 py-3.5 bg-surface-0">
+        {status === 'loading' && !fallbackTitle ? (
+          <div className="h-4 w-48 rounded bg-surface-2 animate-pulse mb-2" />
+        ) : (
+          <p className="text-[13px] font-semibold text-ink-1 leading-[1.35] line-clamp-2 mb-1 group-hover:text-warm transition-colors">
+            {title || hostname}
+          </p>
+        )}
+        {meta?.description && (
+          <p className="text-[11px] text-ink-3 leading-[1.5] line-clamp-2 mb-2">{meta.description}</p>
+        )}
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-medium text-ink-4 uppercase tracking-[0.06em]">{hostname}</span>
+          <ArrowUpRight size={12} className="text-ink-4 group-hover:text-warm transition-colors" />
+        </div>
+      </div>
+    </a>
+  );
+}
+
+/* ─── Media section ─── */
+function MediaEmbed({ item }: { item: ContentItem }) {
+  const url = item.sourceUrl ?? '';
+
+  if (item.type === 'video' && url) {
+    const ytId = getYouTubeId(url);
+    if (ytId) {
+      return (
+        <div className="aspect-video w-full bg-black">
+          <iframe
+            src={`https://www.youtube.com/embed/${ytId}`}
+            className="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      );
+    }
+  }
+
+  if (item.type === 'podcast' && url) {
+    const spotifyEmbed = getSpotifyEmbed(url);
+    if (spotifyEmbed) {
+      return (
+        <div className="px-6 pt-5">
+          <iframe
+            src={spotifyEmbed}
+            width="100%"
+            height="152"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            className="border-0 rounded-xl"
+          />
+        </div>
+      );
+    }
+  }
+
+  if ((item.type === 'article' || item.type === 'book') && url) {
+    return <ArticlePreview url={url} fallbackTitle={item.title} fallbackThumb={item.thumbnail} />;
+  }
+
+  if (item.thumbnail) {
+    return (
+      <div className="relative aspect-[2/1] overflow-hidden">
+        <img src={item.thumbnail} alt={item.title || 'Content'} className="w-full h-full object-cover" loading="lazy" />
+      </div>
+    );
+  }
+
+  return null;
+}
 
 export default function ContextPanel() {
   const { selectedItem, contextPanelOpen, setSelectedItem } = useApp();
@@ -20,21 +152,21 @@ export default function ContextPanel() {
 
       {/* Scrollable body */}
       <div className="flex-1 overflow-y-auto">
-        {/* Thumbnail hero */}
-        {item.thumbnail && (
-          <div className="relative aspect-[2/1] overflow-hidden">
-            <img src={item.thumbnail} alt={item.title || 'Content'} className="w-full h-full object-cover" loading="lazy" />
-          </div>
-        )}
+        <MediaEmbed item={item} />
 
         <div className="px-6 pt-6 pb-8">
           {/* Title */}
           {item.title && (
             <h2 className="text-[17px] font-medium text-ink-1 leading-[1.35] mb-1 tracking-[-0.01em]">{item.title}</h2>
           )}
-          {item.source && (
-            <a href={item.sourceUrl || '#'} className="inline-flex items-center gap-1 text-[12px] text-ink-4 hover:text-warm transition-colors mb-5">
-              {item.source} <ArrowUpRight size={11} />
+          {item.sourceUrl && (item.type === 'video' || item.type === 'podcast' || !item.title) && (
+            <a
+              href={item.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-[12px] text-ink-4 hover:text-warm transition-colors mb-5"
+            >
+              {item.source || getHostname(item.sourceUrl)} <ArrowUpRight size={11} />
             </a>
           )}
 

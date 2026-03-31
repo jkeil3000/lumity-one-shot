@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Globe, Lock } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeContext';
-import { currentUser, allInterests, type ContentItem } from '../data/mock';
+import { getCurrentUser, allInterests, type ContentItem } from '../data/mock';
+
+const currentUser = getCurrentUser();
 
 const lumityPlaceholders = [
   'What made this worth saving?',

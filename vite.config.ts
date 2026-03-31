@@ -4,4 +4,14 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      '/api/proxy': {
+        target: 'https://api.lummity.co',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path: string) => path.replace(/^\/api\/proxy/, '/api/v1'),
+      },
+    },
+  },
 })

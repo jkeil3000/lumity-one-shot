@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { type ContentItem, feedItems, libraryItems } from '../data/mock';
+import { apiFetch } from '../lib/api';
+import { normalizePost, unwrapList } from '../lib/normalize';
 
 type ViewMode = 'scroll' | 'scan';
 type StreamLens = 'following' | 'foryou' | string; // string = interest name
@@ -31,6 +33,47 @@ interface AppState {
 
 const AppContext = createContext<AppState | null>(null);
 
+async function fetchFeed(): Promise<ContentItem[]> {
+  try {
+    const data = await apiFetch('/posts/community', { method: 'GET' });
+    const posts = unwrapList(data);
+    if (posts.length > 0) return posts.map(normalizePost);
+  } catch {
+    // fall through to for-you
+  }
+  try {
+    const data = await apiFetch('/posts/for-you', { method: 'GET' });
+    const posts = unwrapList(data);
+    if (posts.length > 0) return posts.map(normalizePost);
+  } catch {
+    // fall through to foryou alias
+  }
+  try {
+    const data = await apiFetch('/posts/foryou', { method: 'GET' });
+    const posts = unwrapList(data);
+    return posts.map(normalizePost);
+  } catch {
+    return [];
+  }
+}
+
+async function fetchLibrary(): Promise<ContentItem[]> {
+  try {
+    const userId = window.localStorage.getItem('userId') || window.localStorage.getItem('currentUserId');
+    if (!userId) return [];
+    const data = await apiFetch(`/mylibrary?userId=${encodeURIComponent(userId)}&lastId=0&limit=50`, { method: 'GET' });
+    const items = unwrapList(data);
+    return items.flatMap((playlist) => {
+      const posts = Array.isArray(playlist.posts)
+        ? (playlist.posts as Record<string, unknown>[]).filter((p) => p && typeof p === 'object')
+        : [];
+      return posts.map(normalizePost);
+    });
+  } catch {
+    return [];
+  }
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [viewMode, setViewMode] = useState<ViewMode>('scan');
   const [streamLens, setStreamLens] = useState<StreamLens>('following');
@@ -43,6 +86,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [library, setLibrary] = useState<ContentItem[]>(libraryItems);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
+
+  useEffect(() => {
+    fetchFeed().then((posts) => {
+      if (posts.length > 0) setFeed(posts);
+    });
+    fetchLibrary().then((items) => {
+      if (items.length > 0) setLibrary(items);
+    });
+  }, []);
 
   const setSelectedItem = useCallback((item: ContentItem | null) => {
     setSelectedItemState(item);

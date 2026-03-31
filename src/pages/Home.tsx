@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Flame, TrendingUp, Layers } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import {
-  currentUser,
+  getCurrentUser,
   consumptionStats,
   quietPrompts,
   themeCards,
@@ -11,6 +11,8 @@ import {
   getRecentlySaved,
   getEditorialPicks,
 } from '../data/mock';
+
+const currentUser = getCurrentUser();
 import ContentCard from '../components/cards/ContentCard';
 import HorizontalCarousel from '../components/cards/HorizontalCarousel';
 import StatCard from '../components/cards/StatCard';
