@@ -33,22 +33,22 @@ const homePaletteLight = {
 } as CSSProperties;
 
 const homePaletteDark = {
-  '--home-page': '#10151A',
-  '--home-page-deep': '#172027',
-  '--home-tertiary': '#6B4444',
-  '--color-surface-0': '#10151A',
-  '--color-surface-1': '#172027',
-  '--color-surface-2': '#21303A',
-  '--color-surface-3': '#2E414D',
-  '--color-ink-1': '#EEF1EE',
-  '--color-ink-2': '#B9C7C5',
-  '--color-ink-3': '#7C8E92',
-  '--color-ink-4': '#53626A',
-  '--color-rule': '#233039',
-  '--color-rule-faint': '#1B252D',
-  '--color-warm': '#8BC7B4',
-  '--color-warm-hover': '#A0D7C6',
-  '--color-warm-surface': '#18302E',
+  '--home-page': '#0E1614',
+  '--home-page-deep': '#14211D',
+  '--home-tertiary': '#4A6B5A',
+  '--color-surface-0': '#0E1614',
+  '--color-surface-1': '#14211D',
+  '--color-surface-2': '#1C2F28',
+  '--color-surface-3': '#274038',
+  '--color-ink-1': '#EDF2EE',
+  '--color-ink-2': '#B5C9BF',
+  '--color-ink-3': '#95B0A4',
+  '--color-ink-4': '#728E82',
+  '--color-rule': '#1E3329',
+  '--color-rule-faint': '#172720',
+  '--color-warm': '#50C878',
+  '--color-warm-hover': '#3FB86E',
+  '--color-warm-surface': '#152E22',
 } as CSSProperties;
 
 const homePaletteNavy = {

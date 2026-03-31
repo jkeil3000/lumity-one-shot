@@ -30,22 +30,22 @@
    achievement, directional purpose.
    ═══════════════════════════════════════════ */
 [data-theme="midnight"] {
-  --color-surface-0: #10151A;
-  --color-surface-1: #172027;
-  --color-surface-2: #21303A;
-  --color-surface-3: #2E414D;
+  --color-surface-0: #0E1614;
+  --color-surface-1: #14211D;
+  --color-surface-2: #1C2F28;
+  --color-surface-3: #274038;
 
-  --color-ink-1: #EEF1EE;
-  --color-ink-2: #B9C7C5;
-  --color-ink-3: #A4B4B7;
-  --color-ink-4: #7D9096;
+  --color-ink-1: #EDF2EE;
+  --color-ink-2: #B5C9BF;
+  --color-ink-3: #95B0A4;
+  --color-ink-4: #728E82;
 
-  --color-rule: #233039;
-  --color-rule-faint: #1B252D;
+  --color-rule: #1E3329;
+  --color-rule-faint: #172720;
 
-  --color-warm: #8BC7B4;
-  --color-warm-hover: #73B29E;
-  --color-warm-surface: #18302E;
+  --color-warm: #50C878;
+  --color-warm-hover: #3FB86E;
+  --color-warm-surface: #152E22;
 
   --font-reading: 'Playfair Display', 'Georgia', serif;
 }

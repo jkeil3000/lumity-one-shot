@@ -4,7 +4,7 @@ import { useTheme, themes, type ThemeId } from '../context/ThemeContext';
 
 const themeAccents: Record<ThemeId, string> = {
   lumity: '#274336',
-  midnight: '#8BC7B4',
+  midnight: '#50C878',
   navy: '#7AA2D6',
   indigo: '#8A7AE6',
   stone: '#476A5B',
