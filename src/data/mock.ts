@@ -23,7 +23,8 @@ export interface ContentItem {
   author: User;
   interests: string[];
   visibility: 'public' | 'private';
-  state: 'saved' | 'in-progress' | 'completed' | 'favorites';
+  state: 'saved' | 'in-progress' | 'completed';
+  isFavorite?: boolean;
   collections: string[];
   likes: number;
   comments: Comment[];
@@ -389,7 +390,8 @@ export const libraryItems: ContentItem[] = [
     author: currentUser,
     interests: ['Design Thinking', 'Product Design'],
     visibility: 'public',
-    state: 'favorites' as const,
+    state: 'completed' as const,
+    isFavorite: true,
     collections: ['Design Thinking'],
     likes: 31,
     comments: [],
@@ -439,7 +441,8 @@ export const libraryItems: ContentItem[] = [
     author: currentUser,
     interests: ['Product Design', 'Design Thinking'],
     visibility: 'public',
-    state: 'favorites' as const,
+    state: 'completed' as const,
+    isFavorite: true,
     collections: ['Design Thinking'],
     likes: 52,
     comments: [],
@@ -647,7 +650,7 @@ export function getCollectionMosaicThumbnails(collectionName: string, max = 4): 
 }
 
 export function getProfileFavorites(): ContentItem[] {
-  return libraryItems.filter(i => i.state === 'favorites');
+  return libraryItems.filter(i => i.isFavorite);
 }
 
 // Pinned: user-curated items flagged with isPinned, shown near top of profile

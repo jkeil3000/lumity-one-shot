@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
-import { type ActivityEvent, type ContentItem, activityEventsSeed, feedItems, libraryItems } from '../data/mock';
+import { type ActivityEvent, type ContentItem, type Collection, activityEventsSeed, feedItems, libraryItems, collections as defaultCollections } from '../data/mock';
 import { apiFetch } from '../lib/api';
 import { normalizePost, unwrapList } from '../lib/normalize';
 import { calculateStreakSummary } from '../utils/streak';
@@ -26,6 +26,15 @@ interface AppState {
   feed: ContentItem[];
   library: ContentItem[];
   addItem: (item: ContentItem) => void;
+  updateItemState: (itemId: string, newState: ContentItem['state']) => void;
+  toggleFavorite: (itemId: string) => void;
+  collections: Collection[];
+  addCollection: (name: string, description?: string) => Collection;
+  updateCollection: (id: string, updates: Partial<Pick<Collection, 'name' | 'description'>>) => void;
+  deleteCollection: (id: string) => void;
+  removeItem: (itemId: string) => void;
+  addToCollection: (itemId: string, collectionName: string) => void;
+  removeFromCollection: (itemId: string, collectionName: string) => void;
   activityEvents: ActivityEvent[];
   recordActivity: (type: ActivityEvent['type']) => void;
   streakOpen: boolean;
@@ -95,6 +104,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [streakOpen, setStreakOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
+  const [userCollections, setUserCollections] = useState<Collection[]>(defaultCollections);
 
   useEffect(() => {
     fetchFeed().then((posts) => {
@@ -141,6 +151,73 @@ export function AppProvider({ children }: { children: ReactNode }) {
     recordActivity(item.type === 'thought' ? 'create_thought' : item.visibility === 'public' ? 'share_item' : 'save_item');
   }, [recordActivity]);
 
+  const updateItemState = useCallback((itemId: string, newState: ContentItem['state']) => {
+    setLibrary(prev => prev.map(item =>
+      item.id === itemId ? { ...item, state: newState } : item
+    ));
+  }, []);
+
+  const toggleFavorite = useCallback((itemId: string) => {
+    setLibrary(prev => prev.map(item =>
+      item.id === itemId ? { ...item, isFavorite: !item.isFavorite } : item
+    ));
+  }, []);
+
+  const addCollection = useCallback((name: string, description?: string): Collection => {
+    const col: Collection = { id: `col-${Date.now()}`, name, count: 0, visibility: 'private', description };
+    setUserCollections(prev => [...prev, col]);
+    return col;
+  }, []);
+
+  const updateCollection = useCallback((id: string, updates: Partial<Pick<Collection, 'name' | 'description'>>) => {
+    setUserCollections(prev => prev.map(c => {
+      if (c.id !== id) return c;
+      const updated = { ...c, ...updates };
+      // If name changed, update all library items that reference the old name
+      if (updates.name && updates.name !== c.name) {
+        setLibrary(lib => lib.map(item =>
+          item.collections.includes(c.name)
+            ? { ...item, collections: item.collections.map(col => col === c.name ? updates.name! : col) }
+            : item
+        ));
+      }
+      return updated;
+    }));
+  }, []);
+
+  const deleteCollection = useCallback((id: string) => {
+    const col = userCollections.find(c => c.id === id);
+    if (col) {
+      // Remove collection reference from all library items
+      setLibrary(prev => prev.map(item => ({
+        ...item,
+        collections: item.collections.filter(c => c !== col.name),
+      })));
+    }
+    setUserCollections(prev => prev.filter(c => c.id !== id));
+  }, [userCollections]);
+
+  const removeItem = useCallback((itemId: string) => {
+    setLibrary(prev => prev.filter(item => item.id !== itemId));
+    setFeed(prev => prev.filter(item => item.id !== itemId));
+  }, []);
+
+  const addToCollection = useCallback((itemId: string, collectionName: string) => {
+    setLibrary(prev => prev.map(item =>
+      item.id === itemId && !item.collections.includes(collectionName)
+        ? { ...item, collections: [...item.collections, collectionName] }
+        : item
+    ));
+  }, []);
+
+  const removeFromCollection = useCallback((itemId: string, collectionName: string) => {
+    setLibrary(prev => prev.map(item =>
+      item.id === itemId
+        ? { ...item, collections: item.collections.filter(c => c !== collectionName) }
+        : item
+    ));
+  }, []);
+
   const restoreStreakDay = useCallback((dateKey: string) => {
     setActivityEvents(prev => {
       if (prev.some(event => event.effectiveDateKey === dateKey && event.type === 'grace_restore')) {
@@ -168,7 +245,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       captureOpen, setCaptureOpen,
       libraryFilter, setLibraryFilter,
       libraryCollection, setLibraryCollection,
-      feed, library, addItem,
+      feed, library, addItem, updateItemState, toggleFavorite,
+      collections: userCollections, addCollection, updateCollection, deleteCollection, removeItem, addToCollection, removeFromCollection,
       activityEvents, recordActivity,
       streakOpen, setStreakOpen, restoreStreakDay, streakSummary,
       notificationsOpen, setNotificationsOpen,

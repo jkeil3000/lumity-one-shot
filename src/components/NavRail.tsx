@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CSSProperties } from 'react';
-import { PenSquare, Bell, MessageCircle, Home, Radio, Library, User, Compass } from 'lucide-react';
+import { PenSquare, Bell, MessageCircle, Home, Newspaper, Library, User, Compass } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -69,8 +69,8 @@ export default function NavRail() {
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Compass, label: 'Explore', path: '/explore' },
-    { icon: Radio, label: 'Stream', path: '/stream' },
-    { icon: Library, label: 'Mind', path: '/mind' },
+    { icon: Newspaper, label: 'Feed', path: '/stream' },
+    { icon: Library, label: 'Library', path: '/mind' },
     { icon: User, label: 'Profile', path: '/self' },
   ];
 
